@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 async function seed() {
   await prisma.user.deleteMany();
-  await prisma.formulario.deleteMany();
+  await prisma.form.deleteMany();
 
   const passwordHash = await hash('123456', 1);
 
