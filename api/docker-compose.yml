@@ -9,3 +9,8 @@ services:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=form-boost
+    volumes:
+      - boost_db:/bitnami/postgresql
+
+volumes:
+  boost_db:

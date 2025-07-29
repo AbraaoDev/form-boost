@@ -1,4 +1,5 @@
 import fastifyCors from '@fastify/cors';
+import fastifyJwt from '@fastify/jwt';
 import fastifySwagger from '@fastify/swagger';
 import ScalarApiReference from '@scalar/fastify-api-reference';
 import chalk from 'chalk';
@@ -12,7 +13,8 @@ import {
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { env } from '@/env';
-import { createAccount } from './http/routes/auth/create-account';
+import { authenticate } from './http/routes/auth/authenticate';
+import { register } from './http/routes/auth/register';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -36,7 +38,12 @@ app.register(ScalarApiReference, {
   routePrefix: '/docs',
 });
 
-app.register(createAccount);
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+});
+
+app.register(register);
+app.register(authenticate);
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(
