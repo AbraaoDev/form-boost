@@ -14,8 +14,7 @@ import {
 } from 'fastify-type-provider-zod';
 import { ZodError } from 'zod';
 import { env } from '@/env';
-import { authenticate } from './http/routes/auth/authenticate';
-import { register } from './http/routes/auth/register';
+import { apiRoutes } from './http/routes';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -30,7 +29,7 @@ app.register(fastifySwagger, {
       description: 'Sistema de criação de formulários inteligentes.',
       version: '1.0.0',
     },
-    servers: [],
+    servers: [{ url: `http://${env.HOST}:${env.PORT}` }],
   },
   transform: jsonSchemaTransform,
 });
@@ -43,8 +42,7 @@ app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
 });
 
-app.register(register);
-app.register(authenticate);
+app.register(apiRoutes, { prefix: `/api/${env.VERSION}` });
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
@@ -65,12 +63,12 @@ app.setErrorHandler((error, _, reply) => {
 });
 
 app.listen({ port: env.PORT }).then(() => {
+  const serverUrl = `http://${env.HOST}:${env.PORT}`;
+  console.log(chalk.cyan(`🦊 Http server running on ${serverUrl}`));
   console.log(
-    chalk.cyan(`🦊 Http server running http://${env.HOST}:${env.PORT}`),
-  );
-  console.log(
-    chalk.magenta(
-      `📂 Documentation API in http://${env.HOST}:${env.PORT}/docs`,
+    chalk.yellow(
+      `🚀 API routes available under ${serverUrl}/api/${env.VERSION}`,
     ),
   );
+  console.log(chalk.magenta(`📂 Documentation API in ${serverUrl}/docs`));
 });

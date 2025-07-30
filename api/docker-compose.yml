@@ -1,8 +1,7 @@
-version: '3.7'
-
 services:
   pg:
     image: bitnami/postgresql:latest
+    container_name: form-boost-db
     ports:
       - '5432:5432'
     environment:
@@ -14,3 +13,4 @@ services:
 
 volumes:
   boost_db:
+    driver: local

@@ -8,12 +8,12 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
+  id           String   @id @default(cuid(2))
   name         String?
   email        String   @unique
-  passwordHash String   @map("password_hash")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   tokens Token[]
   forms  Form[]
@@ -26,58 +26,58 @@ enum TokenType {
 }
 
 model Token {
-  id        String    @id @default(cuid())
+  id        String    @id @default(cuid(2))
   type      TokenType
-  createdAt DateTime  @default(now()) @map("created_at")
+  createdAt DateTime  @default(now())
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id")
+  userId String
 
   @@map("tokens")
 }
 
 model Form {
-  id          String    @id @default(cuid())
-  name        String
-  description String
-  isActive    Boolean   @default(true) @map("is_active")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  deletedAt   DateTime? @map("deleted_at")
-  userDeleted String?   @map("user_deleted")
+  id          String    @id @default(cuid(2))
+  name        String    @db.VarChar(255)
+  description String?   @db.VarChar(500)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  userDeleted String?
   protected   Boolean   @default(false)
 
   owner    User            @relation(fields: [userId], references: [id])
-  userId   String          @map("user_id")
+  userId   String
   versions VersionSchema[]
 
   @@map("forms")
 }
 
 model VersionSchema {
-  id             String   @id @default(cuid())
+  id             String   @id @default(cuid(2))
   name           String
   description    String
   fields         Json
   schema_version String
-  isActive       Boolean  @default(true) @map("is_active")
-  createdAt      DateTime @default(now()) @map("created_at")
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
 
   form   Form     @relation(fields: [formId], references: [id])
-  formId String   @map("form_id")
+  formId String
   Answer Answer[]
 
   @@map("version_schemas")
 }
 
 model Answer {
-  id              String    @id @default(cuid())
-  isActive        Boolean   @default(true) @map("is_active")
+  id              String    @id @default(cuid(2))
+  isActive        Boolean   @default(true)
   answers         Json
   calculated      Json
-  versionSchemaId String    @map("version_schema_id")
-  createdAt       DateTime  @default(now()) @map("created_at")
-  deletedAt       DateTime? @map("deleted_at")
+  versionSchemaId String
+  createdAt       DateTime  @default(now())
+  deletedAt       DateTime?
 
   versionSchema VersionSchema @relation(fields: [versionSchemaId], references: [id])
 

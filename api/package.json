@@ -5,8 +5,8 @@
 		"dev": "tsx watch src/server.ts",
 		"start": "node build/server.js",
 		"build": "tsup src --out-dir build",
-		"db:migrate": "pnpm env:load prisma migrate dev",
-		"db:studio": "pnpm env:load prisma studio"
+		"db:migrate": "pnpm prisma migrate dev",
+		"db:studio": "pnpm prisma studio"
 	},
 	"dependencies": {
 		"@fastify/cors": "^11.0.1",

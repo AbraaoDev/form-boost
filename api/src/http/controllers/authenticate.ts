@@ -1,7 +1,7 @@
 import { compare } from 'bcryptjs';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { prisma } from '@/lib/prisma';
-import type { AuthenticateBody } from '../schemas/authenticate';
+import type { AuthenticateBody } from '../../schemas/authenticate';
 
 export async function authenticateController(
   request: FastifyRequest<{ Body: AuthenticateBody }>,

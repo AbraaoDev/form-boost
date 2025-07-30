@@ -6,6 +6,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().default('default_secret'),
   HOST: z.string().default('localhost'),
   PORT: z.coerce.number().default(3333),
+  VERSION: z.string().default('v1'),
 });
 
 const _env = envSchema.safeParse(process.env);
