@@ -15,6 +15,7 @@ export async function createFormRoute(app: FastifyInstance) {
       {
         schema: {
           tags: ['forms'],
+          security: [{ bearerAuth: [] }],
           summary: 'Create a new form',
           body: createFormBodySchema,
         },

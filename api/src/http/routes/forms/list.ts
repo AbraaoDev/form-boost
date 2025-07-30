@@ -15,6 +15,7 @@ export async function listFormsRoute(app: FastifyInstance) {
       {
         schema: {
           tags: ['forms'],
+          security: [{ bearerAuth: [] }],
           summary: 'List active forms with filters and pagination',
           querystring: listFormsQuerySchema,
         },

@@ -30,6 +30,15 @@ app.register(fastifySwagger, {
       version: '1.0.0',
     },
     servers: [{ url: `http://${env.HOST}:${env.PORT}` }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   transform: jsonSchemaTransform,
 });

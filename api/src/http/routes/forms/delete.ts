@@ -15,6 +15,7 @@ export async function deleteFormRoute(app: FastifyInstance) {
       {
         schema: {
           tags: ['forms'],
+          security: [{ bearerAuth: [] }],
           summary: 'Soft delete a form by id',
           params: getFormByIdParamsSchema,
         },

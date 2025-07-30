@@ -41,8 +41,8 @@ export const createFormBodySchema = z.object({
     .min(1)
     .max(100)
     .refine(
-      (campos) => {
-        const ids = campos.map((c) => c.id);
+      (fields) => {
+        const ids = fields.map((c) => c.id);
         return new Set(ids).size === ids.length;
       },
       { message: 'IDs dos campos devem ser únicos.' },

@@ -15,6 +15,7 @@ export async function getFormByIdRoute(app: FastifyInstance) {
       {
         schema: {
           tags: ['forms'],
+          security: [{ bearerAuth: [] }],
           summary: 'Get form by id with full schema',
           params: getFormByIdParamsSchema,
         },
