@@ -50,4 +50,20 @@ export class PrismaFormsRepository {
 
     return { total, forms };
   }
+
+  async findActiveById(id: string) {
+    return prisma.form.findFirst({
+      where: {
+        id,
+        isActive: true,
+        deletedAt: null,
+      },
+      include: {
+        versions: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+  }
 }

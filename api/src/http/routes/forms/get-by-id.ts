@@ -1,24 +1,24 @@
 import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import { listFormsController } from '@/http/controllers/list-forms';
+import { getFormByIdController } from '@/http/controllers/get-form-by-id';
 import { auth } from '@/http/middlewares/auth';
 import { requireJson } from '@/http/middlewares/require-json';
-import { listFormsQuerySchema } from '@/schemas/list-forms';
+import { getFormByIdParamsSchema } from '@/schemas/get-form-by-id';
 
-export async function listFormsRoute(app: FastifyInstance) {
+export async function getFormByIdRoute(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .register(requireJson({ accept: true }))
     .get(
-      '/forms',
+      '/forms/:id',
       {
         schema: {
           tags: ['forms'],
-          summary: 'List active forms with filters and pagination',
-          querystring: listFormsQuerySchema,
+          summary: 'Get form by id with full schema',
+          params: getFormByIdParamsSchema,
         },
       },
-      listFormsController,
+      getFormByIdController,
     );
 }

@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import type { ListFormsQuery } from '@/schemas/list-forms-query';
+import type { ListFormsQuery } from '@/schemas/list-forms';
 import {
   InvalidFilterError,
   InvalidParamError,

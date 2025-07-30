@@ -1,5 +1,5 @@
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
-import type { ListFormsQuery } from '@/schemas/list-forms-query';
+import type { ListFormsQuery } from '@/schemas/list-forms';
 
 class InvalidParamError extends Error {
   field: string;
