@@ -66,4 +66,29 @@ export class PrismaFormsRepository {
       },
     });
   }
+
+  async softDeleteById(id: string, userId: string) {
+    const form = await prisma.form.findUnique({ where: { id } });
+    if (!form) return null;
+    if (form.protected) return 'protected';
+    if (form.isActive === false) return 'already_deleted';
+
+    const now = new Date();
+
+    try {
+      await prisma.form.update({
+        where: { id },
+        data: {
+          isActive: false,
+          deletedAt: now,
+          userDeleted: userId,
+        },
+      });
+
+      //TODO: adicionar flag no version schema também (isActive)
+      return { now };
+    } catch {
+      return 'fail';
+    }
+  }
 }
