@@ -12,6 +12,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+import { ZodError } from 'zod';
 import { env } from '@/env';
 import { authenticate } from './http/routes/auth/authenticate';
 import { register } from './http/routes/auth/register';
@@ -44,6 +45,24 @@ app.register(fastifyJwt, {
 
 app.register(register);
 app.register(authenticate);
+
+app.setErrorHandler((error, _, reply) => {
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      message: 'Validation error',
+      issues: error.format(),
+    });
+  }
+  if (env.NODE_ENV !== 'production') {
+    console.error(error);
+  } else {
+    //TODO: Datadog external logging service
+  }
+  return reply.status(500).send({
+    message: 'Internal server error',
+    error: error.message,
+  });
+});
 
 app.listen({ port: env.PORT }).then(() => {
   console.log(
