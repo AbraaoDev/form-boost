@@ -5,7 +5,7 @@ import { authenticateBodySchema } from '@/schemas/authenticate';
 
 export async function authenticate(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
-    '/authenticate',
+    '/sessions',
     {
       schema: {
         tags: ['auth'],
