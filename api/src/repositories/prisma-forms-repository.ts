@@ -5,4 +5,49 @@ export class PrismaFormsRepository {
   async create(data: Prisma.FormCreateInput) {
     return prisma.form.create({ data });
   }
+
+  async listActive({
+    name,
+    schema_version,
+    skip,
+    take,
+    orderBy,
+    order,
+  }: {
+    name?: string;
+    schema_version?: number;
+    skip: number;
+    take: number;
+    orderBy: 'name' | 'createdAt';
+    order: 'asc' | 'desc';
+  }) {
+    const where: any = { isActive: true, deletedAt: null };
+    if (name) {
+      where.name = { contains: name, mode: 'insensitive' };
+    }
+
+    const versionWhere: any = {};
+    if (schema_version) {
+      versionWhere.schema_version = String(schema_version);
+    }
+
+    const [total, forms] = await Promise.all([
+      prisma.form.count({ where }),
+      prisma.form.findMany({
+        where,
+        orderBy: { [orderBy]: order },
+        skip,
+        take,
+        include: {
+          versions: {
+            where: versionWhere,
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+      }),
+    ]);
+
+    return { total, forms };
+  }
 }
