@@ -56,11 +56,8 @@ model Form {
 
 model VersionSchema {
   id             String   @id @default(cuid(2))
-  name           String
-  description    String
   fields         Json
   schema_version String
-  isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
 
   form   Form     @relation(fields: [formId], references: [id])

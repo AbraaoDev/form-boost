@@ -2,6 +2,10 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Node 20",
   "_version": "20.1.0",
+  "include": [
+    "src/**/*",
+    "@types/*.d.ts"
+  ],
   "compilerOptions": {
     "lib": [
       "es2023"
