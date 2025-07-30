@@ -8,7 +8,7 @@ type RequireJsonOptions = {
 
 export function requireJson(options: RequireJsonOptions) {
   return fastifyPlugin(async (app: FastifyInstance) => {
-    app.addHook('preHandler', async (request, reply) => {
+    app.addHook('onRequest', async (request, reply) => {
       if (options.accept) {
         const accept = request.headers.accept;
         if (!accept || !accept.includes('application/json')) {
