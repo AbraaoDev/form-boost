@@ -1,37 +1,5 @@
 import { z } from 'zod';
-
-const typeValids = [
-  'text',
-  'number',
-  'date',
-  'select',
-  'boolean',
-  'calculated',
-] as const;
-
-const validationSchema = z.object({
-  type: z.string().min(1),
-  value: z.any(),
-});
-
-const fieldSchema = z.object({
-  id: z
-    .string()
-    .min(1)
-    .max(50)
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      'ID deve ser alfanumérico e sem espaços ou símbolos',
-    ),
-  label: z.string().min(1).max(255),
-  type: z.enum(typeValids),
-  necessary: z.boolean(),
-  captilize: z.boolean().optional(),
-  multirow: z.boolean().optional(),
-  format: z.string().optional(),
-  validations: z.array(validationSchema).optional(),
-  condition: z.string().optional(),
-});
+import { fieldSchema } from '@/lib/validators/field-validators';
 
 export const createFormBodySchema = z.object({
   name: z.string().min(1).max(255),
@@ -45,7 +13,7 @@ export const createFormBodySchema = z.object({
         const ids = fields.map((c) => c.id);
         return new Set(ids).size === ids.length;
       },
-      { message: 'IDs dos campos devem ser únicos.' },
+      { message: 'Field IDs must be unique.' },
     ),
 });
 

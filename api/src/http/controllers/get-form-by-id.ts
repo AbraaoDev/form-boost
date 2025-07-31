@@ -4,6 +4,7 @@ import {
   FormNotFoundError,
   getFormByIdService,
   InvalidIdError,
+  CircularDependencyError,
 } from '@/services/get-form-by-id';
 
 export async function getFormByIdController(
@@ -30,8 +31,16 @@ export async function getFormByIdController(
         message: err.message,
       });
     }
+    if (err instanceof CircularDependencyError) {
+      console.error('Circular dependency error:', err.message);
+      return reply.status(500).send({
+        error: 'circular_dependency_error',
+        message: 'Internal server error due to circular dependency in form schema.',
+      });
+    }
+    console.error('Unexpected error in get-form-by-id:', err);
     return reply.status(500).send({
-      error: 'internal_error',
+      error: 'internal_server_error',
       message: 'Internal server error. Please try again later.',
     });
   }
