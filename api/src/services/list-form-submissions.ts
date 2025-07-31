@@ -1,4 +1,5 @@
-import { prisma } from '@/lib/prisma';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
+import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
 import type { ListFormSubmissionsQuery } from '@/schemas/list-form-submissions';
 
 export class FormNotFoundError extends Error {
@@ -34,19 +35,21 @@ export async function listFormSubmissionsService(
   fieldFilters: FieldFilter[] = []
 ) {
 
-  const form = await prisma.form.findFirst({
-    where: {
+  const prismaFormsRepository = new PrismaFormsRepository();
+  
+  const form = await prismaFormsRepository.findFirstWithVersions(
+    {
       id: formId,
       isActive: true,
       deletedAt: null,
     },
-    include: {
+    {
       versions: {
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-    },
-  });
+    }
+  );
 
   if (!form) {
     throw new FormNotFoundError(`The form ${formId} does not exist or is inactive.`);
@@ -77,16 +80,16 @@ export async function listFormSubmissionsService(
   const skip = (query.page - 1) * query.length_page;
   const take = query.length_page;
 
-  const total = await prisma.formSubmission.count({
-    where: whereConditions,
-  });
+  const prismaFormSubmissionsRepository = new PrismaFormSubmissionsRepository();
+  
+  const total = await prismaFormSubmissionsRepository.count(whereConditions);
 
   const totalPages = Math.ceil(total / take);
   if (query.page > totalPages && total > 0) {
     throw new InvalidPageError(query.page);
   }
 
-  const submissions = await prisma.formSubmission.findMany({
+  const submissions = await prismaFormSubmissionsRepository.findMany({
     where: whereConditions,
     skip,
     take,

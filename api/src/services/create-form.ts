@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import type { CreateFormBody } from '@/schemas/create-form';
 import { FormValidationService } from '@/services/form-validation';
 
@@ -30,20 +30,19 @@ export async function createFormService(
     }
   }
 
-  const form = await prisma.form.create({
-    data: {
-      name,
-      description,
-      userId,
-      versions: {
-        create: {
-          fields,
-          schema_version: '1',
-        },
-      },
+  const prismaFormsRepository = new PrismaFormsRepository();
+  
+  const form = await prismaFormsRepository.createForm({
+    name,
+    description,
+    owner: {
+      connect: { id: userId }
     },
-    include: {
-      versions: true,
+    versions: {
+      create: {
+        fields,
+        schema_version: '1',
+      },
     },
   });
 

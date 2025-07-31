@@ -2,7 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 export class PrismaFormsRepository {
-  async create(data: Prisma.FormCreateInput) {
+  async createForm(data: Prisma.FormCreateInput) {
     return prisma.form.create({ data });
   }
 
@@ -85,10 +85,17 @@ export class PrismaFormsRepository {
         },
       });
 
-      //TODO: adicionar flag no version schema também (isActive)
       return { now };
     } catch {
       return 'fail';
     }
+  }
+
+  async findFirstWithVersions(where: Prisma.FormWhereInput, include?: Prisma.FormInclude) {
+    return prisma.form.findFirst({ where, include }) as Promise<any>;
+  }
+
+  async updateForm(where: Prisma.FormWhereUniqueInput, data: Prisma.FormUpdateInput, include?: Prisma.FormInclude) {
+    return prisma.form.update({ where, data, include });
   }
 }

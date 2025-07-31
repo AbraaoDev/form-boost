@@ -10,7 +10,7 @@ export class PrismaUsersRepository {
     return user;
   }
   async create(data: Prisma.UserCreateInput) {
-    const user = prisma.user.create({
+    const user = await prisma.user.create({
       data,
     });
 

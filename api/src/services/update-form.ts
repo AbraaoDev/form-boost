@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import type { UpdateFormSchemaVersionBody } from '@/schemas/update-form';
 import { FormValidationService, type Field } from '@/services/form-validation';
 import { FieldValidators } from '@/lib/validators/field-validators';
@@ -38,10 +38,12 @@ export class UpdateFormService {
     { schema_version, name, description, fields }: UpdateFormSchemaVersionBody,
   ) {
     try {
-      const form = await prisma.form.findFirst({
-        where: { id: formId, isActive: true, deletedAt: null },
-        include: { versions: { orderBy: { createdAt: 'desc' }, take: 1 } },
-      });
+      const prismaFormsRepository = new PrismaFormsRepository();
+      
+      const form = await prismaFormsRepository.findFirstWithVersions(
+        { id: formId, isActive: true, deletedAt: null },
+        { versions: { orderBy: { createdAt: 'desc' }, take: 1 } }
+      );
       
       if (!form) {
         throw new FormNotFoundError('Formulário não encontrado ou inativo.');
@@ -82,9 +84,9 @@ export class UpdateFormService {
         }
       }
 
-      const updated = await prisma.form.update({
-        where: { id: formId },
-        data: {
+      const updated = await prismaFormsRepository.updateForm(
+        { id: formId },
+        {
           name,
           description,
           versions: {
@@ -94,8 +96,8 @@ export class UpdateFormService {
             },
           },
         },
-        include: { versions: { orderBy: { createdAt: 'desc' }, take: 1 } },
-      });
+        { versions: { orderBy: { createdAt: 'desc' }, take: 1 } }
+      );
 
       const result = {
         message: 'Schema version updated successfully.',

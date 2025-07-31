@@ -1,4 +1,5 @@
-import { prisma } from '@/lib/prisma';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
+import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
 
 export class FormNotFoundError extends Error {
   constructor(msg: string) {
@@ -48,27 +49,36 @@ export async function deleteFormSubmissionService(
   submitId: string,
   userId: string
 ) {
-  const form = await prisma.form.findFirst({
-    where: {
-      id: formId,
-      isActive: true,
-      deletedAt: null,
-    },
+  const prismaFormsRepository = new PrismaFormsRepository();
+  
+  const form = await prismaFormsRepository.findFirstWithVersions({
+    id: formId,
+    isActive: true,
+    deletedAt: null,
   });
 
   if (!form) {
     throw new FormNotFoundError(`The form '${formId}' does not exist or is inactive.`);
   }
 
-  const submission = await prisma.formSubmission.findFirst({
-    where: {
+  const prismaFormSubmissionsRepository = new PrismaFormSubmissionsRepository();
+  
+  const submission = await prismaFormSubmissionsRepository.findFirst(
+    {
       id: submitId,
       formId: formId,
     },
-    include: {
-      form: true,
-    },
-  });
+    {
+      form: {
+        include: {
+          versions: {
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+      },
+    }
+  );
 
   if (!submission) {
     throw new SubmitNotFoundError(`The submit '${submitId}' was not found for the form '${formId}'.`);
@@ -90,17 +100,15 @@ export async function deleteFormSubmissionService(
   try {
     const now = new Date();
     
-    const updatedSubmission = await prisma.formSubmission.update({
-      where: {
-        id: submitId,
-      },
-      data: {
+    const updatedSubmission = await prismaFormSubmissionsRepository.update(
+      { id: submitId },
+      {
         isActive: false,
         deletedAt: now,
         userDeleted: userId,
         updatedAt: now,
-      },
-    });
+      }
+    );
 
 
     return {

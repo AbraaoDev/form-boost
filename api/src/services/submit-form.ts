@@ -1,4 +1,5 @@
-import { prisma } from '@/lib/prisma';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
+import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
 import { FormValidationService, type Field } from '@/services/form-validation';
 import { Parser } from 'expr-eval';
 
@@ -26,19 +27,21 @@ export class FormSubmissionService {
   static async submitForm(submission: FormSubmissionData): Promise<FormSubmissionResult> {
     try {
 
-      const form = await prisma.form.findFirst({
-        where: {
+      const prismaFormsRepository = new PrismaFormsRepository();
+      
+      const form = await prismaFormsRepository.findFirstWithVersions(
+        {
           id: submission.id,
           isActive: true,
           deletedAt: null,
         },
-        include: {
+        {
           versions: {
             orderBy: { createdAt: 'desc' },
             take: submission.schemaVersion ? 10 : 1, // Buscar mais versões se schema_version especificado
           },
-        },
-      });
+        }
+      );
 
       if (!form) {
         return {
@@ -51,7 +54,7 @@ export class FormSubmissionService {
       // 2. Determinar versão do schema
       let targetVersion = form.versions[0];
       if (submission.schemaVersion) {
-        const requestedVersion = form.versions.find(v => Number(v.schema_version) === submission.schemaVersion);
+        const requestedVersion = form.versions.find((v: any) => Number(v.schema_version) === submission.schemaVersion);
         
         if (!requestedVersion) {
           return {
@@ -126,18 +129,18 @@ export class FormSubmissionService {
 
       const calculatedValues = this.calculateFields(typedFields, submission.answers);
 
-      const submissionRecord = await prisma.formSubmission.create({
+      const prismaFormSubmissionsRepository = new PrismaFormSubmissionsRepository();
+      
+      const submissionRecord = await prismaFormSubmissionsRepository.create({
+        form: {
+          connect: { id: submission.id }
+        },
+        user: {
+          connect: { id: submission.userId }
+        },
         data: {
-          form: {
-            connect: { id: submission.id }
-          },
-          user: {
-            connect: { id: submission.userId }
-          },
-          data: {
-            ...submission.answers,
-            ...calculatedValues,
-          },
+          ...submission.answers,
+          ...calculatedValues,
         },
       });
 
