@@ -4,6 +4,7 @@ import { authenticate } from './auth/authenticate';
 import { register } from './auth/register';
 import { createFormRoute } from './forms/create';
 import { deleteFormRoute } from './forms/delete';
+import { deleteFormSubmissionRoute } from './forms/delete-submission';
 import { getFormByIdRoute } from './forms/get-by-id';
 import { listFormsRoute } from './forms/list';
 import { listFormSubmissionsRoute } from './forms/list-submissions';
@@ -19,5 +20,6 @@ export async function apiRoutes(app: FastifyInstance) {
   app.register(deleteFormRoute);
   app.register(submitFormRoute);
   app.register(listFormSubmissionsRoute);
+  app.register(deleteFormSubmissionRoute);
   app.register(updateFormSchemaVersionRoute);
 }

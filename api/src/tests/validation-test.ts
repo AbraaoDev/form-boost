@@ -3,6 +3,7 @@ import { UpdateFormExamples } from '@/examples/update-form-examples';
 import { GetFormExamples } from '@/examples/get-form-examples';
 import { SubmitFormExamples } from '@/examples/submit-form-examples';
 import { ListFormSubmissionsExamples } from '@/examples/list-form-submissions-examples';
+import { DeleteFormSubmissionExamples } from '@/examples/delete-form-submission-examples';
 
 export async function runValidationTests() {
   console.log('🚀 Iniciando testes de validação...\n');
@@ -48,6 +49,12 @@ export async function runValidationTests() {
   // Testes de list-form-submissions
   console.log('📊 Testando list-form-submissions...');
   await ListFormSubmissionsExamples.testListFormSubmissionsExamples();
+  
+  console.log('\n' + '='.repeat(50) + '\n');
+  
+  // Testes de delete-form-submission
+  console.log('🗑️ Testando delete-form-submission...');
+  await DeleteFormSubmissionExamples.testDeleteFormSubmissionExamples();
   
   console.log('\n✅ Todos os testes concluídos!');
 }
