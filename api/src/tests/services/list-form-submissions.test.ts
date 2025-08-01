@@ -88,6 +88,19 @@ describe('ListFormSubmissionsService', () => {
           },
           createdAt: new Date('2024-01-15T10:30:00.000Z'),
           schema_version: 1,
+          form: {
+            versions: [
+              {
+                id: 'version-1',
+                schema_version: '1',
+                fields: [
+                  { id: 'name', type: 'text' },
+                  { id: 'age', type: 'number' },
+                  { id: 'total', type: 'calculated' },
+                ],
+              },
+            ],
+          },
         },
         {
           id: 'submission-2',
@@ -102,6 +115,19 @@ describe('ListFormSubmissionsService', () => {
           },
           createdAt: new Date('2024-01-16T14:20:00.000Z'),
           schema_version: 1,
+          form: {
+            versions: [
+              {
+                id: 'version-1',
+                schema_version: '1',
+                fields: [
+                  { id: 'name', type: 'text' },
+                  { id: 'age', type: 'number' },
+                  { id: 'total', type: 'calculated' },
+                ],
+              },
+            ],
+          },
         },
       ];
 
@@ -130,9 +156,6 @@ describe('ListFormSubmissionsService', () => {
               name: 'João Silva',
               age: 30,
             },
-            calculated: {
-              total: 100,
-            },
           },
           {
             id_submit: 'submission-2',
@@ -141,9 +164,6 @@ describe('ListFormSubmissionsService', () => {
             answers: {
               name: 'Maria Santos',
               age: 25,
-            },
-            calculated: {
-              total: 150,
             },
           },
         ],
@@ -195,8 +215,20 @@ describe('ListFormSubmissionsService', () => {
           age: 20 + i,
         },
         calculated: {},
-        createdAt: new Date(`2024-01-${15 + i}:00:00.000Z`),
+        createdAt: new Date(`2024-01-${String((i % 28) + 1).padStart(2, '0')}:00:00.000Z`),
         schema_version: 1,
+        form: {
+          versions: [
+            {
+              id: 'version-1',
+              schema_version: '1',
+              fields: [
+                { id: 'name', type: 'text' },
+                { id: 'age', type: 'number' },
+              ],
+            },
+          ],
+        },
       }));
 
       mockFormsRepository.findFirstWithVersions.mockResolvedValue(mockForm);
@@ -236,6 +268,15 @@ describe('ListFormSubmissionsService', () => {
           calculated: {},
           createdAt: new Date('2024-01-15T10:30:00.000Z'),
           schema_version: 1,
+          form: {
+            versions: [
+              {
+                id: 'version-1',
+                schema_version: '1',
+                fields: [{ id: 'name', type: 'text' }],
+              },
+            ],
+          },
         },
       ];
 
@@ -274,6 +315,8 @@ describe('ListFormSubmissionsService', () => {
           data: {
             price: 10,
             quantity: 5,
+            total: 50,
+            tax: 5,
           },
           calculated: {
             total: 50,
@@ -281,6 +324,20 @@ describe('ListFormSubmissionsService', () => {
           },
           createdAt: new Date('2024-01-15T10:30:00.000Z'),
           schema_version: 1,
+          form: {
+            versions: [
+              {
+                id: 'version-1',
+                schema_version: '1',
+                fields: [
+                  { id: 'price', type: 'number' },
+                  { id: 'quantity', type: 'number' },
+                  { id: 'total', type: 'calculated' },
+                  { id: 'tax', type: 'calculated' },
+                ],
+              },
+            ],
+          },
         },
       ];
 
@@ -292,6 +349,7 @@ describe('ListFormSubmissionsService', () => {
       const query = {
         page: 1,
         length_page: 20,
+        include_calculated: true,
       };
 
       const result = await listFormSubmissionsService(formId, query);
@@ -322,6 +380,18 @@ describe('ListFormSubmissionsService', () => {
           calculated: null,
           createdAt: new Date('2024-01-15T10:30:00.000Z'),
           schema_version: 1,
+          form: {
+            versions: [
+              {
+                id: 'version-1',
+                schema_version: '1',
+                fields: [
+                  { id: 'name', type: 'text' },
+                  { id: 'email', type: 'text' },
+                ],
+              },
+            ],
+          },
         },
       ];
 

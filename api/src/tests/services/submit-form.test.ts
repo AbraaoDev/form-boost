@@ -133,6 +133,16 @@ describe('SubmitFormService', () => {
       };
 
       mockFormsRepository.findFirstWithVersions.mockResolvedValue(mockForm);
+      mockSubmissionsRepository.create.mockResolvedValue({
+        id: 'submission-123',
+        formId: 'form-123',
+        userId: 'user-123',
+        data: {
+          name: 'João Silva',
+          age: 30,
+        },
+        createdAt: new Date(),
+      });
 
       const formId = 'form-123';
       const userId = 'user-123';
@@ -148,7 +158,7 @@ describe('SubmitFormService', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.message).toBe('Form submitted successfully');
+      expect(result.message).toBe('Registration submit successfully.');
       expect(result.submissionId).toBeDefined();
     });
 
@@ -187,6 +197,17 @@ describe('SubmitFormService', () => {
       };
 
       mockFormsRepository.findFirstWithVersions.mockResolvedValue(mockForm);
+      mockSubmissionsRepository.create.mockResolvedValue({
+        id: 'submission-123',
+        formId: 'form-123',
+        userId: 'user-123',
+        data: {
+          price: 10,
+          quantity: 5,
+          total: 50,
+        },
+        createdAt: new Date(),
+      });
 
       const formId = 'form-123';
       const userId = 'user-123';
@@ -203,6 +224,7 @@ describe('SubmitFormService', () => {
 
       expect(result.success).toBe(true);
       expect(result.calculatedValues).toBeDefined();
+      expect(result.calculatedValues?.total).toBe(50);
     });
   });
 
@@ -281,6 +303,15 @@ describe('SubmitFormService', () => {
       };
 
       mockFormsRepository.findFirstWithVersions.mockResolvedValue(mockForm);
+      mockSubmissionsRepository.create.mockResolvedValue({
+        id: 'submission-123',
+        formId: 'form-123',
+        userId: 'user-123',
+        data: {
+          name: 'João Silva',
+        },
+        createdAt: new Date(),
+      });
 
       const formId = 'form-123';
       const userId = 'user-123';
@@ -296,7 +327,7 @@ describe('SubmitFormService', () => {
       });
 
       expect(result.success).toBe(true);
-      expect(result.message).toBe('Form submitted successfully');
+      expect(result.message).toBe('Registration submit successfully.');
     });
   });
 
@@ -330,6 +361,16 @@ describe('SubmitFormService', () => {
       };
 
       mockFormsRepository.findFirstWithVersions.mockResolvedValue(mockForm);
+      mockSubmissionsRepository.create.mockResolvedValue({
+        id: 'submission-123',
+        formId: 'form-123',
+        userId: 'user-123',
+        data: {
+          has_company: true,
+          company_name: 'Tech Solutions',
+        },
+        createdAt: new Date(),
+      });
 
       const formId = 'form-123';
       const userId = 'user-123';
