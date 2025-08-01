@@ -10,6 +10,7 @@
 		"test:validation": "tsx scripts/test-validation.ts"
 	},
 	"dependencies": {
+		"@fastify/cookie": "^11.0.2",
 		"@fastify/cors": "^11.0.1",
 		"@fastify/jwt": "^9.1.0",
 		"@fastify/swagger": "^9.5.1",

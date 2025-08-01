@@ -1,4 +1,5 @@
 import fastifyCors from '@fastify/cors';
+import fastifyCookie from '@fastify/cookie';
 import fastifyJwt from '@fastify/jwt';
 import fastifySwagger from '@fastify/swagger';
 import ScalarApiReference from '@scalar/fastify-api-reference';
@@ -22,6 +23,7 @@ const app = fastify().withTypeProvider<ZodTypeProvider>();
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
 app.register(fastifyCors);
+app.register(fastifyCookie);
 
 app.register(fastifySwagger, {
   openapi: {

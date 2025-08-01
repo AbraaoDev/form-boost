@@ -6,10 +6,7 @@ export async function getFormByIdController(
   request: FastifyRequest<{ Params: GetFormByIdParams }>,
   reply: FastifyReply,
 ) {
-  const userId = await request.getCurrentUserId();
-  if (!userId) {
-    return reply.status(401).send({ message: 'Unauthorized' });
-  }
+  const userId = await request.requireAuth(reply);
   
   const result = await getFormByIdService(request.params.id);
   return reply.status(200).send(result);

@@ -11,10 +11,7 @@ export async function listFormsController(
   reply: FastifyReply,
 ) {
   try {
-    const userId = await request.getCurrentUserId();
-    if (!userId) {
-      return reply.status(401).send({ message: 'Unauthorized' });
-    }
+    const userId = await request.requireAuth(reply);
     const result = await listFormsService(request.query);
     return reply.status(200).send(result);
   } catch (err: any) {

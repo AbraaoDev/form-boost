@@ -15,10 +15,7 @@ export async function deleteFormSubmissionController(
   reply: FastifyReply,
 ) {
   try {
-    const userId = await request.getCurrentUserId();
-    if (!userId) {
-      return reply.status(401).send({ message: 'Unauthorized' });
-    }
+    const userId = await request.requireAuth(reply);
 
     const { id, id_submit } = request.params;
 
