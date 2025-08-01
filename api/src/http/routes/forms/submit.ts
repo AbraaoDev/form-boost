@@ -5,6 +5,13 @@ import { submitFormController } from '@/http/controllers/submit-form';
 import { auth } from '@/http/middlewares/auth';
 import { requireJson } from '@/http/middlewares/require-json';
 import { submitFormBodySchema } from '@/schemas/submit-form';
+import {
+  submitFormSuccessResponseSchema,
+  submitFormErrorResponseSchema,
+  unauthorizedResponseSchema,
+  validationErrorResponseSchema,
+  internalServerErrorResponseSchema,
+} from '@/schemas/responses';
 
 export async function submitFormRoute(app: FastifyInstance) {
   app
@@ -22,6 +29,14 @@ export async function submitFormRoute(app: FastifyInstance) {
             id: z.string().min(1),
           }),
           body: submitFormBodySchema,
+          response: {
+            201: submitFormSuccessResponseSchema,
+            400: submitFormErrorResponseSchema,
+            401: unauthorizedResponseSchema,
+            409: submitFormErrorResponseSchema,
+            422: submitFormErrorResponseSchema,
+            500: internalServerErrorResponseSchema,
+          },
         },
       },
       submitFormController,

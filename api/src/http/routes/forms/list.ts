@@ -4,6 +4,12 @@ import { listFormsController } from '@/http/controllers/list-forms';
 import { auth } from '@/http/middlewares/auth';
 import { requireJson } from '@/http/middlewares/require-json';
 import { listFormsQuerySchema } from '@/schemas/list-forms';
+import {
+  listFormsResponseSchema,
+  unauthorizedResponseSchema,
+  validationErrorResponseSchema,
+  internalServerErrorResponseSchema,
+} from '@/schemas/responses';
 
 export async function listFormsRoute(app: FastifyInstance) {
   app
@@ -18,6 +24,13 @@ export async function listFormsRoute(app: FastifyInstance) {
           security: [{ bearerAuth: [] }],
           summary: 'List active forms with filters and pagination',
           querystring: listFormsQuerySchema,
+          response: {
+            200: listFormsResponseSchema,
+            400: validationErrorResponseSchema,
+            401: unauthorizedResponseSchema,
+            422: validationErrorResponseSchema,
+            500: internalServerErrorResponseSchema,
+          },
         },
       },
       listFormsController,

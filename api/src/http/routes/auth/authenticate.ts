@@ -1,8 +1,14 @@
 import type { FastifyInstance } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import z from 'zod';
 import { authenticateController } from '@/http/controllers/authenticate';
 import { authenticateBodySchema } from '@/schemas/authenticate';
+import {
+  authenticateSuccessResponseSchema,
+  errorResponseSchema,
+  unauthorizedResponseSchema,
+  validationErrorResponseSchema,
+  internalServerErrorResponseSchema,
+} from '@/schemas/responses';
 
 export async function authenticate(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
@@ -13,12 +19,11 @@ export async function authenticate(app: FastifyInstance) {
         summary: 'Authenticate a user',
         body: authenticateBodySchema,
         response: {
-          400: z.object({
-            message: z.string(),
-          }),
-          200: z.object({
-            token: z.string(),
-          }),
+          200: authenticateSuccessResponseSchema,
+          400: errorResponseSchema,
+          401: unauthorizedResponseSchema,
+          422: validationErrorResponseSchema,
+          500: internalServerErrorResponseSchema,
         },
       },
     },

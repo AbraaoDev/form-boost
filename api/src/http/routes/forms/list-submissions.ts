@@ -7,6 +7,15 @@ import {
   listFormSubmissionsParamsSchema, 
   listFormSubmissionsQuerySchema 
 } from '@/schemas/list-form-submissions';
+import {
+  listFormSubmissionsResponseSchema,
+  formNotFoundErrorResponseSchema,
+  invalidParamErrorResponseSchema,
+  invalidPageErrorResponseSchema,
+  unauthorizedResponseSchema,
+  validationErrorResponseSchema,
+  internalServerErrorResponseSchema,
+} from '@/schemas/responses';
 
 export async function listFormSubmissionsRoute(app: FastifyInstance) {
   app
@@ -22,6 +31,14 @@ export async function listFormSubmissionsRoute(app: FastifyInstance) {
           summary: 'List form submissions with filters and pagination',
           params: listFormSubmissionsParamsSchema,
           querystring: listFormSubmissionsQuerySchema,
+          response: {
+            200: listFormSubmissionsResponseSchema,
+            400: invalidParamErrorResponseSchema,
+            401: unauthorizedResponseSchema,
+            404: formNotFoundErrorResponseSchema,
+            422: invalidPageErrorResponseSchema,
+            500: internalServerErrorResponseSchema,
+          },
         },
       },
       listFormSubmissionsController,
