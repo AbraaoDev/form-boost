@@ -2,32 +2,7 @@ import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import type { UpdateFormSchemaVersionBody } from '@/schemas/update-form';
 import { FormValidationService, type Field } from '@/services/form-validation';
 import { FieldValidators } from '@/lib/validators/field-validators';
-
-export class FormNotFoundError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormNotFoundError';
-  }
-}
-
-export class InvalidSchemaVersionError extends Error {
-  status = 422;
-  err = 'invalid_schema_version';
-  constructor(version: number) {
-    super(`The schema version ${version} is lower or equal to the current version of the form.`);
-    this.name = 'InvalidSchemaVersionError';
-  }
-}
-
-export class InvalidSchemaError extends Error {
-  status = 422;
-  err = 'invalid_schema';
-  errors: { field: string; message: string }[];
-  constructor(errors: { field: string; message: string }[]) {
-    super('There are errors in the new schema.');
-    this.errors = errors;
-  }
-}
+import { FormNotFoundError, InvalidSchemaVersionError, InvalidSchemaError } from '@/errors';
 
 
 

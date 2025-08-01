@@ -1,47 +1,16 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { GetFormByIdParams } from '@/schemas/get-form-by-id';
-import {
-  FormNotFoundError,
-  getFormByIdService,
-  InvalidIdError,
-  CircularDependencyError,
-} from '@/services/get-form-by-id';
+import { getFormByIdService } from '@/services/get-form-by-id';
 
 export async function getFormByIdController(
   request: FastifyRequest<{ Params: GetFormByIdParams }>,
   reply: FastifyReply,
 ) {
-  try {
-    const userId = await request.getCurrentUserId();
-    if (!userId) {
-      return reply.status(401).send({ message: 'Unauthorized' });
-    }
-    const result = await getFormByIdService(request.params.id);
-    return reply.status(200).send(result);
-  } catch (err: any) {
-    if (err instanceof InvalidIdError) {
-      return reply.status(422).send({
-        error: 'invalid_id',
-        message: err.message,
-      });
-    }
-    if (err instanceof FormNotFoundError) {
-      return reply.status(404).send({
-        error: 'form_not_found',
-        message: err.message,
-      });
-    }
-    if (err instanceof CircularDependencyError) {
-      console.error('Circular dependency error:', err.message);
-      return reply.status(500).send({
-        error: 'circular_dependency_error',
-        message: 'Internal server error due to circular dependency in form schema.',
-      });
-    }
-    console.error('Unexpected error in get-form-by-id:', err);
-    return reply.status(500).send({
-      error: 'internal_server_error',
-      message: 'Internal server error. Please try again later.',
-    });
+  const userId = await request.getCurrentUserId();
+  if (!userId) {
+    return reply.status(401).send({ message: 'Unauthorized' });
   }
+  
+  const result = await getFormByIdService(request.params.id);
+  return reply.status(200).send(result);
 }

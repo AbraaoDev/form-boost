@@ -2,27 +2,7 @@ import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import { getFormByIdParamsSchema } from '@/schemas/get-form-by-id';
 import { FieldValidators } from '@/lib/validators/field-validators';
 import { FormValidationService, type Field } from '@/services/form-validation';
-
-export class InvalidIdError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'InvalidIdError';
-  }
-}
-
-export class FormNotFoundError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormNotFoundError';
-  }
-}
-
-export class CircularDependencyError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'CircularDependencyError';
-  }
-}
+import { InvalidIdError, FormNotFoundError, CircularDependencyError } from '@/errors';
 
 export async function getFormByIdService(id: string) {
   const parse = getFormByIdParamsSchema.safeParse({ id });

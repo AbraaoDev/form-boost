@@ -15,6 +15,7 @@ import {
 import { ZodError } from 'zod';
 import { env } from '@/env';
 import { apiRoutes } from './http/routes';
+import { errorHandler } from './http/middlewares/error-handler';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -53,23 +54,7 @@ app.register(fastifyJwt, {
 
 app.register(apiRoutes, { prefix: `/api/${env.VERSION}` });
 
-app.setErrorHandler((error, _, reply) => {
-  if (error instanceof ZodError) {
-    return reply.status(400).send({
-      message: 'Validation error',
-      issues: error.format(),
-    });
-  }
-  if (env.NODE_ENV !== 'production') {
-    console.error(error);
-  } else {
-    //TODO: Datadog external logging service
-  }
-  return reply.status(500).send({
-    message: 'Internal server error',
-    error: error.message,
-  });
-});
+app.setErrorHandler(errorHandler);
 
 app.listen({ port: env.PORT }).then(() => {
   const serverUrl = `http://${env.HOST}:${env.PORT}`;

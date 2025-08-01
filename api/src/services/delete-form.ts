@@ -1,23 +1,5 @@
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
-
-export class FormNotFoundError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormNotFoundError';
-  }
-}
-export class FormProtectedError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormProtectedError';
-  }
-}
-export class SoftDeleteFailError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormProtectedError';
-  }
-}
+import { FormNotFoundError, FormProtectedError, SoftDeleteFailError } from '@/errors';
 
 export async function deleteFormService(id: string, userId: string) {
   const repo = new PrismaFormsRepository();
