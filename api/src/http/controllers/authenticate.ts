@@ -23,9 +23,9 @@ export async function authenticateController(
 
     reply.setCookie('auth-token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', 
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60, 
+      maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 

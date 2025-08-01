@@ -15,5 +15,9 @@ export const listFormSubmissionsQuerySchema = z.object({
   schema_version: z.coerce.number().int().min(1).optional(),
 });
 
-export type ListFormSubmissionsParams = z.infer<typeof listFormSubmissionsParamsSchema>;
-export type ListFormSubmissionsQuery = z.infer<typeof listFormSubmissionsQuerySchema>; 
+export type ListFormSubmissionsParams = z.infer<
+  typeof listFormSubmissionsParamsSchema
+>;
+export type ListFormSubmissionsQuery = z.infer<
+  typeof listFormSubmissionsQuerySchema
+>;

@@ -3,11 +3,11 @@ import type { DeleteFormSubmissionParams } from '@/schemas/delete-form-submissio
 import {
   deleteFormSubmissionService,
   FormNotFoundError,
-  SubmitNotFoundError,
-  SubmitAlreadyRemovedError,
   InactiveFormError,
-  SubmitBlockedError,
   SoftDeleteFailError,
+  SubmitAlreadyRemovedError,
+  SubmitBlockedError,
+  SubmitNotFoundError,
 } from '@/services/delete-form-submission';
 
 export async function deleteFormSubmissionController(
@@ -65,7 +65,8 @@ export async function deleteFormSubmissionController(
       console.error('Soft delete error:', err.message);
       return reply.status(500).send({
         error: 'internal_server_error',
-        message: 'Internal server error while trying to soft delete the submit.',
+        message:
+          'Internal server error while trying to soft delete the submit.',
       });
     }
 
@@ -75,4 +76,4 @@ export async function deleteFormSubmissionController(
       message: 'Internal server error.',
     });
   }
-} 
+}

@@ -51,6 +51,51 @@ export class PrismaFormsRepository {
     return { total, forms };
   }
 
+  async listAll({
+    name,
+    schema_version,
+    skip,
+    take,
+    orderBy,
+    order,
+  }: {
+    name?: string;
+    schema_version?: number;
+    skip: number;
+    take: number;
+    orderBy: 'name' | 'createdAt';
+    order: 'asc' | 'desc';
+  }) {
+    const where: any = {};
+    if (name) {
+      where.name = { contains: name, mode: 'insensitive' };
+    }
+
+    const versionWhere: any = {};
+    if (schema_version) {
+      versionWhere.schema_version = String(schema_version);
+    }
+
+    const [total, forms] = await Promise.all([
+      prisma.form.count({ where }),
+      prisma.form.findMany({
+        where,
+        orderBy: { [orderBy]: order },
+        skip,
+        take,
+        include: {
+          versions: {
+            where: versionWhere,
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
+        },
+      }),
+    ]);
+
+    return { total, forms };
+  }
+
   async findActiveById(id: string) {
     return prisma.form.findFirst({
       where: {
@@ -91,11 +136,18 @@ export class PrismaFormsRepository {
     }
   }
 
-  async findFirstWithVersions(where: Prisma.FormWhereInput, include?: Prisma.FormInclude) {
+  async findFirstWithVersions(
+    where: Prisma.FormWhereInput,
+    include?: Prisma.FormInclude,
+  ) {
     return prisma.form.findFirst({ where, include }) as Promise<any>;
   }
 
-  async updateForm(where: Prisma.FormWhereUniqueInput, data: Prisma.FormUpdateInput, include?: Prisma.FormInclude) {
+  async updateForm(
+    where: Prisma.FormWhereUniqueInput,
+    data: Prisma.FormUpdateInput,
+    include?: Prisma.FormInclude,
+  ) {
     return prisma.form.update({ where, data, include });
   }
 }

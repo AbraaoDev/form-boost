@@ -1,5 +1,5 @@
-import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import type { ListFormSubmissionsQuery } from '@/schemas/list-form-submissions';
 
 export class FormNotFoundError extends Error {
@@ -32,11 +32,10 @@ interface FieldFilter {
 export async function listFormSubmissionsService(
   formId: string,
   query: ListFormSubmissionsQuery,
-  fieldFilters: FieldFilter[] = []
+  fieldFilters: FieldFilter[] = [],
 ) {
-
   const prismaFormsRepository = new PrismaFormsRepository();
-  
+
   const form = await prismaFormsRepository.findFirstWithVersions(
     {
       id: formId,
@@ -48,11 +47,13 @@ export async function listFormSubmissionsService(
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-    }
+    },
   );
 
   if (!form) {
-    throw new FormNotFoundError(`The form ${formId} does not exist or is inactive.`);
+    throw new FormNotFoundError(
+      `The form ${formId} does not exist or is inactive.`,
+    );
   }
 
   if (query.length_page > 100) {
@@ -81,7 +82,7 @@ export async function listFormSubmissionsService(
   const take = query.length_page;
 
   const prismaFormSubmissionsRepository = new PrismaFormSubmissionsRepository();
-  
+
   const total = await prismaFormSubmissionsRepository.count(whereConditions);
 
   const totalPages = Math.ceil(total / take);
@@ -106,15 +107,13 @@ export async function listFormSubmissionsService(
     },
   });
 
-
-  const results = submissions.map(submission => {
+  const results = submissions.map((submission) => {
     const data = submission.data as Record<string, any>;
-    
 
     const answers: Record<string, any> = {};
     const calculated: Record<string, any> = {};
 
-    const formFields = submission.form.versions[0]?.fields as any[] || [];
+    const formFields = (submission.form.versions[0]?.fields as any[]) || [];
     const calculatedFieldIds = formFields
       .filter((field: any) => field.type === 'calculated')
       .map((field: any) => field.id);
@@ -151,7 +150,7 @@ export async function listFormSubmissionsService(
 
 export function extractFieldFilters(query: Record<string, any>): FieldFilter[] {
   const filters: FieldFilter[] = [];
-  
+
   for (const [key, value] of Object.entries(query)) {
     if (key.startsWith('field_')) {
       const fieldName = key.replace('field_', '');
@@ -161,6 +160,6 @@ export function extractFieldFilters(query: Record<string, any>): FieldFilter[] {
       });
     }
   }
-  
+
   return filters;
-} 
+}

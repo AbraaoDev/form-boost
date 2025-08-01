@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 export const textValidationSchema = z.object({
   type: z.enum([
     'min_length',
@@ -12,12 +11,10 @@ export const textValidationSchema = z.object({
   value: z.union([z.string(), z.number(), z.array(z.string())]).optional(),
 });
 
-
 export const numberValidationSchema = z.object({
   type: z.enum(['min', 'max', 'multiple_of', 'format', 'not_empty']),
   value: z.union([z.number(), z.string()]).optional(),
 });
-
 
 export const booleanValidationSchema = z.object({
   type: z.enum(['not_empty', 'expected_value', 'blocked_for_false']),
@@ -25,51 +22,32 @@ export const booleanValidationSchema = z.object({
 });
 
 export const dateValidationSchema = z.object({
-  type: z.enum([
-    'future_date',
-    'strict_iso_format',
-    'not_empty',
-    'before',
-  ]),
+  type: z.enum(['future_date', 'strict_iso_format', 'not_empty', 'before']),
   value: z.union([z.string(), z.boolean()]).optional(),
   allowed: z.boolean().optional(),
   field: z.string().optional(),
 });
 
-
 export const selectValidationSchema = z.object({
-  type: z.enum([
-    'in_list',
-    'min_count',
-    'max_count',
-    'required_conditional',
-  ]),
+  type: z.enum(['in_list', 'min_count', 'max_count', 'required_conditional']),
   value: z.union([z.number(), z.string()]).optional(),
   min: z.number().optional(),
   max: z.number().optional(),
   conditional: z.string().optional(),
 });
 
-
 export const calculatedValidationSchema = z.object({
-  type: z.enum([
-    'in_list',
-    'equal_to',
-    'valid_range',
-    'valid_date_format',
-  ]),
+  type: z.enum(['in_list', 'equal_to', 'valid_range', 'valid_date_format']),
   value: z.any().optional(),
   values: z.array(z.any()).optional(),
   min: z.number().optional(),
   max: z.number().optional(),
 });
 
-
 export const selectOptionSchema = z.object({
   label: z.string().min(1).max(255),
   value: z.string().min(1).max(100),
 });
-
 
 export const baseFieldSchema = z.object({
   id: z
@@ -87,7 +65,6 @@ export const baseFieldSchema = z.object({
   validations: z.array(z.any()).optional(),
 });
 
-
 export const textFieldSchema = baseFieldSchema.extend({
   type: z.literal('text'),
   capitalize: z.boolean().optional(),
@@ -101,20 +78,23 @@ export const numberFieldSchema = baseFieldSchema.extend({
   validations: z.array(numberValidationSchema).optional(),
 });
 
-
 export const booleanFieldSchema = baseFieldSchema.extend({
   type: z.literal('boolean'),
   validations: z.array(booleanValidationSchema).optional(),
 });
 
-
 export const dateFieldSchema = baseFieldSchema.extend({
   type: z.literal('date'),
-  min: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  max: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  min: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  max: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
   validations: z.array(dateValidationSchema).optional(),
 });
-
 
 export const selectFieldSchema = baseFieldSchema.extend({
   type: z.literal('select'),
@@ -123,7 +103,6 @@ export const selectFieldSchema = baseFieldSchema.extend({
   validations: z.array(selectValidationSchema).optional(),
 });
 
-
 export const calculatedFieldSchema = baseFieldSchema.extend({
   type: z.literal('calculated'),
   formula: z.string().min(1),
@@ -131,7 +110,6 @@ export const calculatedFieldSchema = baseFieldSchema.extend({
   precision: z.number().int().min(0).max(10).optional(),
   validations: z.array(calculatedValidationSchema).optional(),
 });
-
 
 export const fieldSchema = z.discriminatedUnion('type', [
   textFieldSchema,
@@ -142,7 +120,7 @@ export const fieldSchema = z.discriminatedUnion('type', [
   calculatedFieldSchema,
 ]);
 
-// Functions for field validations specific	
+// Functions for field validations specific
 export class FieldValidators {
   //regex
   static validateRegex(pattern: string): boolean {
@@ -158,7 +136,7 @@ export class FieldValidators {
   static validateISODate(dateString: string): boolean {
     const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!isoDateRegex.test(dateString)) return false;
-    
+
     const date = new Date(dateString);
     return date.toISOString().split('T')[0] === dateString;
   }
@@ -168,7 +146,7 @@ export class FieldValidators {
     fields: Array<{ id: string; dependencies?: string[] }>,
   ): { isValid: boolean; error?: string } {
     const graph = new Map<string, string[]>();
-    
+
     // graph
     fields.forEach((field) => {
       if (field.dependencies) {
@@ -223,7 +201,7 @@ export class FieldValidators {
       }
     }
 
-    const allowedChars = /^[a-zA-Z0-9_+\-*\/^()\s.,>=<!=&|]+$/;
+    const allowedChars = /^[a-zA-Z0-9_+\-*/^()\s.,>=<!=&|]+$/;
     if (!allowedChars.test(formula)) {
       return {
         isValid: false,
@@ -233,10 +211,22 @@ export class FieldValidators {
 
     const variableRegex = /\b[a-zA-Z_][a-zA-Z0-9_]*\b/g;
     const variables = formula.match(variableRegex) || [];
-    
+
     for (const variable of variables) {
-      if (!dependencies.includes(variable) && 
-          !['if', 'min', 'max', 'abs', 'sqrt', 'log', 'ceil', 'floor', 'round'].includes(variable)) {
+      if (
+        !dependencies.includes(variable) &&
+        ![
+          'if',
+          'min',
+          'max',
+          'abs',
+          'sqrt',
+          'log',
+          'ceil',
+          'floor',
+          'round',
+        ].includes(variable)
+      ) {
         return {
           isValid: false,
           error: `Variable '${variable}' is not in the dependencies of the field`,
@@ -248,11 +238,14 @@ export class FieldValidators {
   }
 
   // Date range
-  static validateDateRange(min?: string, max?: string): { isValid: boolean; error?: string } {
+  static validateDateRange(
+    min?: string,
+    max?: string,
+  ): { isValid: boolean; error?: string } {
     if (min && max) {
       const minDate = new Date(min);
       const maxDate = new Date(max);
-      
+
       if (minDate > maxDate) {
         return {
           isValid: false,
@@ -260,19 +253,22 @@ export class FieldValidators {
         };
       }
     }
-    
+
     return { isValid: true };
   }
 
   // Number range
-  static validateNumberRange(min?: number, max?: number): { isValid: boolean; error?: string } {
+  static validateNumberRange(
+    min?: number,
+    max?: number,
+  ): { isValid: boolean; error?: string } {
     if (min !== undefined && max !== undefined && min > max) {
       return {
         isValid: false,
         error: 'Minimum number cannot be greater than the maximum number',
       };
     }
-    
+
     return { isValid: true };
   }
-} 
+}

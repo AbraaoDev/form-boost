@@ -1,4 +1,4 @@
-import { FormValidationService } from "@/services/form-validation";
+import { FormValidationService } from '@/services/form-validation';
 
 export class FormValidationExamples {
   static getPatientFormExample() {
@@ -47,7 +47,7 @@ export class FormValidationExamples {
           id: 'altura',
           label: 'Altura (cm)',
           type: 'number',
-          format: 'integer', 
+          format: 'integer',
           required: true,
           validations: [
             { type: 'min', value: 50 },
@@ -61,7 +61,7 @@ export class FormValidationExamples {
           formula: 'peso / (altura/100)^2',
           dependencies: ['peso', 'altura'],
           precision: 2,
-          required: false, 
+          required: false,
         },
         {
           id: 'data_nascimento',
@@ -69,7 +69,7 @@ export class FormValidationExamples {
           type: 'date',
           required: true,
           min: '1900-01-01',
-          max: '2025-07-31', 
+          max: '2025-07-31',
           validations: [{ type: 'future_date', allowed: false }],
         },
         {
@@ -139,7 +139,10 @@ export class FormValidationExamples {
           type: 'text',
           required: true,
           validations: [
-            { type: 'regex', value: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' },
+            {
+              type: 'regex',
+              value: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
+            },
           ],
         },
         {
@@ -147,8 +150,11 @@ export class FormValidationExamples {
           label: 'Confirmar E-mail',
           type: 'text',
           required: true,
-           validations: [
-            { type: 'regex', value: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' },
+          validations: [
+            {
+              type: 'regex',
+              value: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
+            },
           ],
         },
         {
@@ -189,15 +195,17 @@ export class FormValidationExamples {
   static testFormValidation(formData: any) {
     console.log('---');
     console.log(`=== Testando Validação do Schema: ${formData.name} ===`);
-    
+
     const result = FormValidationService.validateForm(formData.fields);
-    
+
     if (result.isValid) {
       console.log('✅ Schema do formulário é válido!');
     } else {
       console.log('❌ Schema do formulário é inválido:');
       result.errors.forEach((error, index) => {
-        console.log(`  ${index + 1}. [${error.field}] ${error.message} (type: ${error.type})`);
+        console.log(
+          `  ${index + 1}. [${error.field}] ${error.message} (type: ${error.type})`,
+        );
       });
     }
     console.log('---');

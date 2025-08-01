@@ -5,4 +5,4 @@ export const submitFormBodySchema = z.object({
   answers: z.record(z.string(), z.any()),
 });
 
-export type SubmitFormBody = z.infer<typeof submitFormBodySchema>; 
+export type SubmitFormBody = z.infer<typeof submitFormBodySchema>;

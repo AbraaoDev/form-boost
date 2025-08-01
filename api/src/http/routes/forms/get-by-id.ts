@@ -7,9 +7,9 @@ import { requireJson } from '@/http/middlewares/require-json';
 import { getFormByIdParamsSchema } from '@/schemas/get-form-by-id';
 import {
   formResponseSchema,
+  internalServerErrorResponseSchema,
   unauthorizedResponseSchema,
   validationErrorResponseSchema,
-  internalServerErrorResponseSchema,
 } from '@/schemas/responses';
 
 export async function getFormByIdRoute(app: FastifyInstance) {

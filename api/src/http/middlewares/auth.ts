@@ -1,4 +1,4 @@
-import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import type { FastifyInstance, FastifyReply } from 'fastify';
 import { fastifyPlugin } from 'fastify-plugin';
 import { UnauthorizedError } from '../routes/_errors/unauthorized-error';
 

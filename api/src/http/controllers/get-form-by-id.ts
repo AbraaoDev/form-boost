@@ -7,7 +7,7 @@ export async function getFormByIdController(
   reply: FastifyReply,
 ) {
   const userId = await request.requireAuth(reply);
-  
+
   const result = await getFormByIdService(request.params.id);
   return reply.status(200).send(result);
 }

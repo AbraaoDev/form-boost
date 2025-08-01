@@ -5,10 +5,10 @@ export async function logoutController(
   reply: FastifyReply,
 ) {
   const authToken = request.cookies['auth-token'];
-  
+
   if (!authToken) {
-    return reply.status(400).send({ 
-      message: 'No active session found' 
+    return reply.status(400).send({
+      message: 'No active session found',
     });
   }
 
@@ -20,4 +20,4 @@ export async function logoutController(
   });
 
   return reply.status(200).send({ message: 'Logged out successfully' });
-} 
+}

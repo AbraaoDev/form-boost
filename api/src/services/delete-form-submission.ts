@@ -1,5 +1,5 @@
-import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 
 export class FormNotFoundError extends Error {
   constructor(msg: string) {
@@ -43,14 +43,13 @@ export class SoftDeleteFailError extends Error {
   }
 }
 
-
 export async function deleteFormSubmissionService(
   formId: string,
   submitId: string,
-  userId: string
+  userId: string,
 ) {
   const prismaFormsRepository = new PrismaFormsRepository();
-  
+
   const form = await prismaFormsRepository.findFirstWithVersions({
     id: formId,
     isActive: true,
@@ -58,11 +57,13 @@ export async function deleteFormSubmissionService(
   });
 
   if (!form) {
-    throw new FormNotFoundError(`The form '${formId}' does not exist or is inactive.`);
+    throw new FormNotFoundError(
+      `The form '${formId}' does not exist or is inactive.`,
+    );
   }
 
   const prismaFormSubmissionsRepository = new PrismaFormSubmissionsRepository();
-  
+
   const submission = await prismaFormSubmissionsRepository.findFirst(
     {
       id: submitId,
@@ -77,29 +78,37 @@ export async function deleteFormSubmissionService(
           },
         },
       },
-    }
+    },
   );
 
   if (!submission) {
-    throw new SubmitNotFoundError(`The submit '${submitId}' was not found for the form '${formId}'.`);
+    throw new SubmitNotFoundError(
+      `The submit '${submitId}' was not found for the form '${formId}'.`,
+    );
   }
 
   if (!submission.isActive) {
-    throw new SubmitAlreadyRemovedError('The submit is already inactive. No further action has been taken.');
+    throw new SubmitAlreadyRemovedError(
+      'The submit is already inactive. No further action has been taken.',
+    );
   }
 
   if (!submission.form.isActive) {
-    throw new InactiveFormError('This form has been disabled and does not allow changes to your answers.');
+    throw new InactiveFormError(
+      'This form has been disabled and does not allow changes to your answers.',
+    );
   }
 
-  const isProtected = false; 
+  const isProtected = false;
   if (isProtected) {
-    throw new SubmitBlockedError('The response is protected and cannot be removed due to retention policies.');
+    throw new SubmitBlockedError(
+      'The response is protected and cannot be removed due to retention policies.',
+    );
   }
 
   try {
     const now = new Date();
-    
+
     const updatedSubmission = await prismaFormSubmissionsRepository.update(
       { id: submitId },
       {
@@ -107,17 +116,17 @@ export async function deleteFormSubmissionService(
         deletedAt: now,
         userDeleted: userId,
         updatedAt: now,
-      }
+      },
     );
-
 
     return {
       message: `Submit '${submitId}' marked as inactive successfully.`,
       status: 'soft_deleted',
     };
-
   } catch (error) {
     console.error('Error during soft delete:', error);
-    throw new SoftDeleteFailError(`Failed to soft delete submit '${submitId}'.`);
+    throw new SoftDeleteFailError(
+      `Failed to soft delete submit '${submitId}'.`,
+    );
   }
-} 
+}

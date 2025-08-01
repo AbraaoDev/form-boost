@@ -37,7 +37,11 @@ export class ValidationError extends BaseError {
     this.type = type;
   }
 
-  static fromFieldError(error: { field: string; message: string; type: string }): ValidationError {
+  static fromFieldError(error: {
+    field: string;
+    message: string;
+    type: string;
+  }): ValidationError {
     return new ValidationError(
       error.field,
       error.message,
@@ -51,4 +55,4 @@ export class ValidationError extends BaseError {
       type: this.type,
     };
   }
-} 
+}

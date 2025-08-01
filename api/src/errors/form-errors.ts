@@ -48,4 +48,4 @@ export class CircularDependencyError extends BaseError {
   constructor(message: string) {
     super(message, 'CIRCULAR_DEPENDENCY_ERROR', 422);
   }
-} 
+}

@@ -6,7 +6,10 @@ export class PrismaFormSubmissionsRepository {
     return prisma.formSubmission.create({ data });
   }
 
-  async findFirst(where: Prisma.FormSubmissionWhereInput, include?: Prisma.FormSubmissionInclude) {
+  async findFirst(
+    where: Prisma.FormSubmissionWhereInput,
+    include?: Prisma.FormSubmissionInclude,
+  ) {
     return prisma.formSubmission.findFirst({ where, include }) as Promise<any>;
   }
 
@@ -24,7 +27,10 @@ export class PrismaFormSubmissionsRepository {
     return prisma.formSubmission.count({ where });
   }
 
-  async update(where: Prisma.FormSubmissionWhereUniqueInput, data: Prisma.FormSubmissionUpdateInput) {
+  async update(
+    where: Prisma.FormSubmissionWhereUniqueInput,
+    data: Prisma.FormSubmissionUpdateInput,
+  ) {
     return prisma.formSubmission.update({ where, data });
   }
-} 
+}

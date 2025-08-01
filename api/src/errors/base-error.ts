@@ -23,4 +23,4 @@ export abstract class BaseError extends Error {
       ...(this.field && { field: this.field }),
     };
   }
-} 
+}

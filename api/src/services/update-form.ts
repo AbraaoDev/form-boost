@@ -1,25 +1,26 @@
+import {
+  FormNotFoundError,
+  InvalidSchemaError,
+  InvalidSchemaVersionError,
+} from '@/errors';
+import { FieldValidators } from '@/lib/validators/field-validators';
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import type { UpdateFormSchemaVersionBody } from '@/schemas/update-form';
-import { FormValidationService, type Field } from '@/services/form-validation';
-import { FieldValidators } from '@/lib/validators/field-validators';
-import { FormNotFoundError, InvalidSchemaVersionError, InvalidSchemaError } from '@/errors';
-
-
+import { type Field, FormValidationService } from '@/services/form-validation';
 
 export class UpdateFormService {
-
   async updateFormSchemaVersion(
     formId: string,
     { schema_version, name, description, fields }: UpdateFormSchemaVersionBody,
   ) {
     try {
       const prismaFormsRepository = new PrismaFormsRepository();
-      
+
       const form = await prismaFormsRepository.findFirstWithVersions(
         { id: formId, isActive: true, deletedAt: null },
-        { versions: { orderBy: { createdAt: 'desc' }, take: 1 } }
+        { versions: { orderBy: { createdAt: 'desc' }, take: 1 } },
       );
-      
+
       if (!form) {
         throw new FormNotFoundError('Formulário não encontrado ou inativo.');
       }
@@ -28,34 +29,35 @@ export class UpdateFormService {
         ? Number(form.versions[0].schema_version)
         : 0;
 
-
       if (schema_version <= currentVersion) {
         throw new InvalidSchemaVersionError(schema_version);
       }
 
-
-
-      const validationResult = FormValidationService.validateForm(fields as Field[]);
+      const validationResult = FormValidationService.validateForm(
+        fields as Field[],
+      );
 
       if (!validationResult.isValid) {
-        const errors = validationResult.errors.map(error => ({
+        const errors = validationResult.errors.map((error) => ({
           field: error.field,
           message: error.message,
         }));
-        
-        
+
         throw new InvalidSchemaError(errors);
       }
 
-      const calculatedFields = fields.filter(f => f.type === 'calculated');
-      
+      const calculatedFields = fields.filter((f) => f.type === 'calculated');
+
       if (calculatedFields.length > 0) {
-        const dependencyResult = FieldValidators.validateDependencies(calculatedFields);
+        const dependencyResult =
+          FieldValidators.validateDependencies(calculatedFields);
         if (!dependencyResult.isValid) {
-          throw new InvalidSchemaError([{
-            field: 'form',
-            message: dependencyResult.error!,
-          }]);
+          throw new InvalidSchemaError([
+            {
+              field: 'form',
+              message: dependencyResult.error!,
+            },
+          ]);
         }
       }
 
@@ -71,7 +73,7 @@ export class UpdateFormService {
             },
           },
         },
-        { versions: { orderBy: { createdAt: 'desc' }, take: 1 } }
+        { versions: { orderBy: { createdAt: 'desc' }, take: 1 } },
       );
 
       const result = {
@@ -82,14 +84,12 @@ export class UpdateFormService {
         updated_at: updated.updatedAt ?? new Date(),
       };
 
-       return result;
-
+      return result;
     } catch (error) {
       throw error;
     }
   }
 }
-
 
 export async function updateFormSchemaVersionService(
   id: string,

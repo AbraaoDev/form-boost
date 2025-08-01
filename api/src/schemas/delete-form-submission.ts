@@ -13,4 +13,6 @@ export const deleteFormSubmissionParamsSchema = z.object({
     .regex(/^[a-zA-Z0-9_-]+$/, 'ID da submissão inválido'),
 });
 
-export type DeleteFormSubmissionParams = z.infer<typeof deleteFormSubmissionParamsSchema>; 
+export type DeleteFormSubmissionParams = z.infer<
+  typeof deleteFormSubmissionParamsSchema
+>;

@@ -10,4 +10,4 @@ try {
 } catch (error) {
   console.error('\n❌ Erro durante a execução dos testes:', error);
   process.exit(1);
-} 
+}

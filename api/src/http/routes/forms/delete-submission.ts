@@ -7,13 +7,13 @@ import { deleteFormSubmissionParamsSchema } from '@/schemas/delete-form-submissi
 import {
   deleteFormSubmissionSuccessResponseSchema,
   formNotFoundErrorResponseSchema,
-  submitNotFoundErrorResponseSchema,
-  submitAlreadyRemovedErrorResponseSchema,
   inactiveFormErrorResponseSchema,
+  internalServerErrorResponseSchema,
+  submitAlreadyRemovedErrorResponseSchema,
   submitBlockedErrorResponseSchema,
+  submitNotFoundErrorResponseSchema,
   unauthorizedResponseSchema,
   validationErrorResponseSchema,
-  internalServerErrorResponseSchema,
 } from '@/schemas/responses';
 
 export async function deleteFormSubmissionRoute(app: FastifyInstance) {
@@ -43,4 +43,4 @@ export async function deleteFormSubmissionRoute(app: FastifyInstance) {
       },
       deleteFormSubmissionController,
     );
-} 
+}

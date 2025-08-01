@@ -5,9 +5,9 @@ import { authenticateBodySchema } from '@/schemas/authenticate';
 import {
   authenticateSuccessResponseSchema,
   errorResponseSchema,
+  internalServerErrorResponseSchema,
   unauthorizedResponseSchema,
   validationErrorResponseSchema,
-  internalServerErrorResponseSchema,
 } from '@/schemas/responses';
 
 export async function authenticate(app: FastifyInstance) {

@@ -1,8 +1,8 @@
 import type { FastifyInstance } from 'fastify';
 
 import { authenticate } from './auth/authenticate';
-import { register } from './auth/register';
 import { logoutRoute } from './auth/logout';
+import { register } from './auth/register';
 import { createFormRoute } from './forms/create';
 import { deleteFormRoute } from './forms/delete';
 import { deleteFormSubmissionRoute } from './forms/delete-submission';

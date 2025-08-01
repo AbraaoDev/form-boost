@@ -4,14 +4,14 @@ import { z } from 'zod';
 import { submitFormController } from '@/http/controllers/submit-form';
 import { auth } from '@/http/middlewares/auth';
 import { requireJson } from '@/http/middlewares/require-json';
-import { submitFormBodySchema } from '@/schemas/submit-form';
 import {
-  submitFormSuccessResponseSchema,
+  internalServerErrorResponseSchema,
   submitFormErrorResponseSchema,
+  submitFormSuccessResponseSchema,
   unauthorizedResponseSchema,
   validationErrorResponseSchema,
-  internalServerErrorResponseSchema,
 } from '@/schemas/responses';
+import { submitFormBodySchema } from '@/schemas/submit-form';
 
 export async function submitFormRoute(app: FastifyInstance) {
   app
@@ -41,4 +41,4 @@ export async function submitFormRoute(app: FastifyInstance) {
       },
       submitFormController,
     );
-} 
+}

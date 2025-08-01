@@ -1,9 +1,9 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { FormSubmissionService } from '@/services/submit-form';
 import type { SubmitFormBody } from '@/schemas/submit-form';
+import { FormSubmissionService } from '@/services/submit-form';
 
 export async function submitFormController(
-  request: FastifyRequest<{ 
+  request: FastifyRequest<{
     Params: { id: string };
     Body: SubmitFormBody;
   }>,
@@ -24,18 +24,24 @@ export async function submitFormController(
 
     if (!result.success) {
       let statusCode = 400;
-      
+
       if (result.message.includes('Schema version not found')) {
         statusCode = 422;
-      } else if (result.message.includes('no longer accepted for new submissions')) {
+      } else if (
+        result.message.includes('no longer accepted for new submissions')
+      ) {
         statusCode = 409;
       } else if (result.message.includes('Inconsistent data detected')) {
         statusCode = 422;
       }
 
       return reply.status(statusCode).send({
-        error: statusCode === 409 ? 'schema_outdated' : 
-               statusCode === 422 ? 'business_inconsistency' : 'failed_validation',
+        error:
+          statusCode === 409
+            ? 'schema_outdated'
+            : statusCode === 422
+              ? 'business_inconsistency'
+              : 'failed_validation',
         message: result.message,
         errors: result.errors,
       });
@@ -48,9 +54,9 @@ export async function submitFormController(
       executed_at: result.executedAt,
     });
   } catch (err: any) {
-    return reply.status(500).send({ 
+    return reply.status(500).send({
       error: 'internal_server_error',
       message: 'Internal server error.',
     });
   }
-} 
+}

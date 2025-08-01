@@ -8,7 +8,7 @@ export class ListFormSubmissionsExamples {
       include_calculated: true,
       schema_version: 3,
       field_ocupacao: 'ti',
-      field_nome_completo: 'Maria Santos'
+      field_nome_completo: 'Maria Santos',
     };
   }
 
@@ -17,7 +17,7 @@ export class ListFormSubmissionsExamples {
       page: 1,
       length_page: 20,
       include_calculated: false,
-      field_ocupacao: 'eng'
+      field_ocupacao: 'eng',
     };
   }
 
@@ -25,7 +25,7 @@ export class ListFormSubmissionsExamples {
     return {
       page: 2,
       length_page: 5,
-      include_calculated: true
+      include_calculated: true,
     };
   }
 
@@ -33,7 +33,7 @@ export class ListFormSubmissionsExamples {
     return {
       page: 1,
       length_page: 150, // Excede o máximo de 100
-      include_calculated: true
+      include_calculated: true,
     };
   }
 
@@ -41,7 +41,7 @@ export class ListFormSubmissionsExamples {
     return {
       page: 9999, // Página inexistente
       length_page: 10,
-      include_calculated: true
+      include_calculated: true,
     };
   }
 
@@ -51,7 +51,7 @@ export class ListFormSubmissionsExamples {
     // Teste 1: Query válida com filtros
     console.log('✅ Teste 1: Query válida com filtros');
     try {
-      const validQuery = this.getValidQueryExample();
+      const validQuery = ListFormSubmissionsExamples.getValidQueryExample();
       console.log('Query:', JSON.stringify(validQuery, null, 2));
       console.log('Filtros extraídos:', extractFieldFilters(validQuery));
       console.log('Resultado esperado: 200 OK com submissões filtradas');
@@ -62,7 +62,8 @@ export class ListFormSubmissionsExamples {
     // Teste 2: Query sem campos calculados
     console.log('\n✅ Teste 2: Query sem campos calculados');
     try {
-      const withoutCalculated = this.getQueryWithoutCalculatedExample();
+      const withoutCalculated =
+        ListFormSubmissionsExamples.getQueryWithoutCalculatedExample();
       console.log('Query:', JSON.stringify(withoutCalculated, null, 2));
       console.log('Resultado esperado: 200 OK sem campos calculated');
     } catch (error) {
@@ -72,7 +73,8 @@ export class ListFormSubmissionsExamples {
     // Teste 3: Query com paginação
     console.log('\n✅ Teste 3: Query com paginação');
     try {
-      const withPagination = this.getQueryWithPaginationExample();
+      const withPagination =
+        ListFormSubmissionsExamples.getQueryWithPaginationExample();
       console.log('Query:', JSON.stringify(withPagination, null, 2));
       console.log('Resultado esperado: 200 OK com paginação');
     } catch (error) {
@@ -82,7 +84,7 @@ export class ListFormSubmissionsExamples {
     // Teste 4: Query inválida (length_page > 100)
     console.log('\n❌ Teste 4: Query inválida (length_page > 100)');
     try {
-      const invalidQuery = this.getInvalidQueryExample();
+      const invalidQuery = ListFormSubmissionsExamples.getInvalidQueryExample();
       console.log('Query:', JSON.stringify(invalidQuery, null, 2));
       console.log('Resultado esperado: 400 - invalid_params');
     } catch (error) {
@@ -92,7 +94,8 @@ export class ListFormSubmissionsExamples {
     // Teste 5: Página inexistente
     console.log('\n❌ Teste 5: Página inexistente');
     try {
-      const invalidPage = this.getQueryWithInvalidPageExample();
+      const invalidPage =
+        ListFormSubmissionsExamples.getQueryWithInvalidPageExample();
       console.log('Query:', JSON.stringify(invalidPage, null, 2));
       console.log('Resultado esperado: 422 - invalid_page');
     } catch (error) {
@@ -118,54 +121,53 @@ export class ListFormSubmissionsExamples {
       total: 42,
       results: [
         {
-          id_submit: "resposta_67890",
-          created_at: "2024-03-15T22:10:01Z",
+          id_submit: 'resposta_67890',
+          created_at: '2024-03-15T22:10:01Z',
           schema_version: 3,
           answers: {
-            nome_completo: "Maria Santos",
-            data_nascimento: "1995-02-14",
-            ocupacao: "ti"
+            nome_completo: 'Maria Santos',
+            data_nascimento: '1995-02-14',
+            ocupacao: 'ti',
           },
           calculated: {
             idade: 30,
-            e_maior_de_idade: true
-          }
-        }
-      ]
+            e_maior_de_idade: true,
+          },
+        },
+      ],
     };
   }
 
   static getExpectedErrorStructures() {
     return {
       form_not_found: {
-        erro: "form_not_found",
-        mensagem: "O formulário formulario_001 não existe ou está inativo."
+        erro: 'form_not_found',
+        mensagem: 'O formulário formulario_001 não existe ou está inativo.',
       },
 
       invalid_params: {
-        error: "invalid_params",
-        message: "The parameter 'length_page' must be less than or equal to 100.",
-        field: "length_page"
+        error: 'invalid_params',
+        message:
+          "The parameter 'length_page' must be less than or equal to 100.",
+        field: 'length_page',
       },
 
       invalid_page: {
-        error: "invalid_page",
-        message: "Page 9999 contains no results."
-      }
+        error: 'invalid_page',
+        message: 'Page 9999 contains no results.',
+      },
     };
   }
 
   static getFilterExamples() {
     return {
+      field_ocupacao: 'ti',
 
-      field_ocupacao: "ti",
+      field_nome_completo: 'Maria Santos',
 
-      field_nome_completo: "Maria Santos",
-
-      field_data_nascimento: "1995-02-14",
+      field_data_nascimento: '1995-02-14',
 
       field_aceite_politica: true,
-      
     };
   }
-} 
+}

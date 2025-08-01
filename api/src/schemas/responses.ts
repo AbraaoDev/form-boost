@@ -33,23 +33,55 @@ export const logoutErrorResponseSchema = z.object({
 
 export const formResponseSchema = z.object({
   id: z.string(),
-  title: z.string(),
+  name: z.string(),
   description: z.string().optional(),
-  schema: z.any(),
+  schema_version: z.number(),
   created_at: z.string(),
-  updated_at: z.string(),
+  fields: z.array(z.any()),
 });
 
-export const createFormSuccessResponseSchema = formResponseSchema;
+export const createFormSuccessResponseSchema = z.object({
+  id: z.string(),
+  schema_version: z.string(),
+  message: z.string(),
+  createdAt: z.date(),
+});
 
 export const listFormsResponseSchema = z.object({
-  forms: z.array(formResponseSchema),
-  pagination: z.object({
-    page: z.number(),
-    limit: z.number(),
-    total: z.number(),
-    total_pages: z.number(),
-  }),
+  page_active: z.number(),
+  total_pages: z.number(),
+  total_itens: z.number(),
+  forms: z.array(
+    z
+      .object({
+        id: z.string(),
+        name: z.string(),
+        schema_version: z.number().nullable(),
+        createdAt: z.string(),
+        isActive: z.boolean().optional(),
+        deletedAt: z.string().nullable().optional(),
+        userDeleted: z.string().nullable().optional(),
+      })
+      .refine(
+        (data) => {
+          if (data.isActive === false) {
+            return (
+              data.deletedAt !== undefined && data.userDeleted !== undefined
+            );
+          }
+          if (data.isActive === true) {
+            return (
+              data.deletedAt === undefined && data.userDeleted === undefined
+            );
+          }
+          return true;
+        },
+        {
+          message:
+            'deletedAt and userDeleted should only be present when isActive is false',
+        },
+      ),
+  ),
 });
 
 export const submitFormSuccessResponseSchema = z.object({
@@ -60,7 +92,11 @@ export const submitFormSuccessResponseSchema = z.object({
 });
 
 export const submitFormErrorResponseSchema = z.object({
-  error: z.enum(['schema_outdated', 'business_inconsistency', 'failed_validation']),
+  error: z.enum([
+    'schema_outdated',
+    'business_inconsistency',
+    'failed_validation',
+  ]),
   message: z.string(),
   errors: z.array(z.any()).optional(),
 });
@@ -75,13 +111,18 @@ export const formSubmissionResponseSchema = z.object({
 });
 
 export const listFormSubmissionsResponseSchema = z.object({
-  submissions: z.array(formSubmissionResponseSchema),
-  pagination: z.object({
-    page: z.number(),
-    limit: z.number(),
-    total: z.number(),
-    total_pages: z.number(),
-  }),
+  page: z.number(),
+  length_page: z.number(),
+  total: z.number(),
+  results: z.array(
+    z.object({
+      id_submit: z.string(),
+      created_at: z.string(),
+      schema_version: z.number(),
+      answers: z.record(z.string(), z.any()),
+      calculated: z.record(z.string(), z.any()).optional(),
+    }),
+  ),
 });
 
 export const deleteFormSubmissionSuccessResponseSchema = z.object({
@@ -127,4 +168,4 @@ export const invalidPageErrorResponseSchema = z.object({
 
 export const userAlreadyExistsErrorResponseSchema = z.object({
   message: z.string(),
-}); 
+});

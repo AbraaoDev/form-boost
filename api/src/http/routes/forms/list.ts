@@ -5,10 +5,10 @@ import { auth } from '@/http/middlewares/auth';
 import { requireJson } from '@/http/middlewares/require-json';
 import { listFormsQuerySchema } from '@/schemas/list-forms';
 import {
+  internalServerErrorResponseSchema,
   listFormsResponseSchema,
   unauthorizedResponseSchema,
   validationErrorResponseSchema,
-  internalServerErrorResponseSchema,
 } from '@/schemas/responses';
 
 export async function listFormsRoute(app: FastifyInstance) {
@@ -22,7 +22,8 @@ export async function listFormsRoute(app: FastifyInstance) {
         schema: {
           tags: ['forms'],
           security: [{ bearerAuth: [] }],
-          summary: 'List active forms with filters and pagination',
+          summary:
+            'List forms with filters and pagination. Use include_inactives=true to show deleted forms.',
           querystring: listFormsQuerySchema,
           response: {
             200: listFormsResponseSchema,

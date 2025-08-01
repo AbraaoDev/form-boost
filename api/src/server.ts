@@ -1,5 +1,5 @@
-import fastifyCors from '@fastify/cors';
 import fastifyCookie from '@fastify/cookie';
+import fastifyCors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
 import fastifySwagger from '@fastify/swagger';
 import ScalarApiReference from '@scalar/fastify-api-reference';
@@ -15,8 +15,8 @@ import {
 } from 'fastify-type-provider-zod';
 import { ZodError } from 'zod';
 import { env } from '@/env';
-import { apiRoutes } from './http/routes';
 import { errorHandler } from './http/middlewares/error-handler';
+import { apiRoutes } from './http/routes';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 

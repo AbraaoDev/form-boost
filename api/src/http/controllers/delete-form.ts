@@ -6,7 +6,7 @@ export async function deleteFormController(
   reply: FastifyReply,
 ) {
   const userId = await request.requireAuth(reply);
-  
+
   const result = await deleteFormService(request.params.id, userId);
   return reply.status(200).send(result);
 }

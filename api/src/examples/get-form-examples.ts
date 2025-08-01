@@ -1,5 +1,3 @@
-import { getFormByIdService } from '@/services/get-form-by-id';
-
 export class GetFormExamples {
   static async testGetFormById() {
     console.log('🧪 Testando get-form-by-id...\n');
@@ -8,64 +6,73 @@ export class GetFormExamples {
     console.log('✅ Teste 1: ID válido');
     try {
       // Simular um formulário válido
-      console.log('Resultado esperado: Formulário com todos os campos e propriedades');
+      console.log(
+        'Resultado esperado: Formulário com todos os campos e propriedades',
+      );
       console.log('Estrutura esperada:');
-      console.log(JSON.stringify({
-        id: "formulario_001",
-        name: "Formulário de Onboarding RH",
-        description: "Formulário utilizado no processo de integração de novos colaboradores.",
-        schema_version: 2,
-        created_at: "2024-01-15T10:34:00Z",
-        fields: [
+      console.log(
+        JSON.stringify(
           {
-            id: "nome_completo",
-            label: "Nome completo",
-            type: "text",
-            required: true,
-            capitalize: true,
-            multiline: false,
-            validations: [
-              { type: "max_length", value: 100 },
-              { type: "regex", value: "^[A-Z][a-z]+( [A-Z][a-z]+)+$" }
-            ]
+            id: 'formulario_001',
+            name: 'Formulário de Onboarding RH',
+            description:
+              'Formulário utilizado no processo de integração de novos colaboradores.',
+            schema_version: 2,
+            created_at: '2024-01-15T10:34:00Z',
+            fields: [
+              {
+                id: 'nome_completo',
+                label: 'Nome completo',
+                type: 'text',
+                required: true,
+                capitalize: true,
+                multiline: false,
+                validations: [
+                  { type: 'max_length', value: 100 },
+                  { type: 'regex', value: '^[A-Z][a-z]+( [A-Z][a-z]+)+$' },
+                ],
+              },
+              {
+                id: 'data_nascimento',
+                label: 'Data de nascimento',
+                type: 'date',
+                required: true,
+                min: '1900-01-01',
+                max: '2030-12-31',
+              },
+              {
+                id: 'idade',
+                label: 'Idade (calculada)',
+                type: 'calculated',
+                required: false,
+                formula: 'floor((today() - data_nascimento) / 365.25)',
+                dependencies: ['data_nascimento'],
+                precision: 0,
+              },
+              {
+                id: 'aceite_politica',
+                label: 'Aceito a política de privacidade?',
+                type: 'boolean',
+                required: true,
+              },
+              {
+                id: 'area_atuacao',
+                label: 'Área de atuação',
+                type: 'select',
+                required: true,
+                multiple: false,
+                options: [
+                  { label: 'Engenharia', value: 'eng' },
+                  { label: 'Recursos Humanos', value: 'rh' },
+                  { label: 'Financeiro', value: 'fin' },
+                ],
+              },
+            ],
           },
-          {
-            id: "data_nascimento",
-            label: "Data de nascimento",
-            type: "date",
-            required: true,
-            min: "1900-01-01",
-            max: "2030-12-31"
-          },
-          {
-            id: "idade",
-            label: "Idade (calculada)",
-            type: "calculated",
-            required: false,
-            formula: "floor((today() - data_nascimento) / 365.25)",
-            dependencies: ["data_nascimento"],
-            precision: 0
-          },
-          {
-            id: "aceite_politica",
-            label: "Aceito a política de privacidade?",
-            type: "boolean",
-            required: true
-          },
-          {
-            id: "area_atuacao",
-            label: "Área de atuação",
-            type: "select",
-            required: true,
-            multiple: false,
-            options: [
-              { label: "Engenharia", value: "eng" },
-              { label: "Recursos Humanos", value: "rh" },
-              { label: "Financeiro", value: "fin" }
-            ]
-          }
-        ]
-      }, null, 2));
+          null,
+          2,
+        ),
+      );
     } catch (error) {
       console.log('❌ Erro:', error);
     }
@@ -102,60 +109,61 @@ export class GetFormExamples {
 
   static getExpectedResponseStructure() {
     return {
-      id: "formulario_001",
-      name: "Formulário de Onboarding RH",
-      description: "Formulário utilizado no processo de integração de novos colaboradores.",
+      id: 'formulario_001',
+      name: 'Formulário de Onboarding RH',
+      description:
+        'Formulário utilizado no processo de integração de novos colaboradores.',
       schema_version: 2,
-      created_at: "2024-01-15T10:34:00Z",
+      created_at: '2024-01-15T10:34:00Z',
       fields: [
         {
-          id: "nome_completo",
-          label: "Nome completo",
-          type: "text",
+          id: 'nome_completo',
+          label: 'Nome completo',
+          type: 'text',
           required: true,
           capitalize: true,
           multiline: false,
           validations: [
-            { type: "max_length", value: 100 },
-            { type: "regex", value: "^[A-Z][a-z]+( [A-Z][a-z]+)+$" }
-          ]
+            { type: 'max_length', value: 100 },
+            { type: 'regex', value: '^[A-Z][a-z]+( [A-Z][a-z]+)+$' },
+          ],
         },
         {
-          id: "data_nascimento",
-          label: "Data de nascimento",
-          type: "date",
+          id: 'data_nascimento',
+          label: 'Data de nascimento',
+          type: 'date',
           required: true,
-          min: "1900-01-01",
-          max: "2030-12-31"
+          min: '1900-01-01',
+          max: '2030-12-31',
         },
         {
-          id: "idade",
-          label: "Idade (calculada)",
-          type: "calculated",
+          id: 'idade',
+          label: 'Idade (calculada)',
+          type: 'calculated',
           required: false,
-          formula: "floor((today() - data_nascimento) / 365.25)",
-          dependencies: ["data_nascimento"],
-          precision: 0
+          formula: 'floor((today() - data_nascimento) / 365.25)',
+          dependencies: ['data_nascimento'],
+          precision: 0,
         },
         {
-          id: "aceite_politica",
-          label: "Aceito a política de privacidade?",
-          type: "boolean",
-          required: true
+          id: 'aceite_politica',
+          label: 'Aceito a política de privacidade?',
+          type: 'boolean',
+          required: true,
         },
         {
-          id: "area_atuacao",
-          label: "Área de atuação",
-          type: "select",
+          id: 'area_atuacao',
+          label: 'Área de atuação',
+          type: 'select',
           required: true,
           multiple: false,
           options: [
-            { label: "Engenharia", value: "eng" },
-            { label: "Recursos Humanos", value: "rh" },
-            { label: "Financeiro", value: "fin" }
-          ]
-        }
-      ]
+            { label: 'Engenharia', value: 'eng' },
+            { label: 'Recursos Humanos', value: 'rh' },
+            { label: 'Financeiro', value: 'fin' },
+          ],
+        },
+      ],
     };
   }
-} 
+}

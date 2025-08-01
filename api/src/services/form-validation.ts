@@ -1,21 +1,20 @@
-import { 
-  fieldSchema, 
-  FieldValidators,
-  textFieldSchema,
-  numberFieldSchema,
-  booleanFieldSchema,
-  dateFieldSchema,
-  selectFieldSchema,
-  calculatedFieldSchema,
-  textValidationSchema,
-  numberValidationSchema,
-  booleanValidationSchema,
-  dateValidationSchema,
-  selectValidationSchema,
-  calculatedValidationSchema,
-} from '@/lib/validators/field-validators';
 import type { z } from 'zod';
-
+import {
+  type booleanFieldSchema,
+  type booleanValidationSchema,
+  type calculatedFieldSchema,
+  type calculatedValidationSchema,
+  type dateFieldSchema,
+  type dateValidationSchema,
+  FieldValidators,
+  fieldSchema,
+  type numberFieldSchema,
+  type numberValidationSchema,
+  type selectFieldSchema,
+  type selectValidationSchema,
+  type textFieldSchema,
+  type textValidationSchema,
+} from '@/lib/validators/field-validators';
 
 export type TextField = z.infer<typeof textFieldSchema>;
 export type NumberField = z.infer<typeof numberFieldSchema>;
@@ -51,7 +50,7 @@ export class FormValidationService {
     for (let i = 0; i < fields.length; i++) {
       const field = fields[i];
       const result = fieldSchema.safeParse(field);
-      
+
       if (!result.success) {
         errors.push({
           field: field.id || `field${i}`,
@@ -62,18 +61,23 @@ export class FormValidationService {
       }
 
       // 2. Specific validations by type
-      const fieldErrors = this.validateFieldByType(field, fields);
+      const fieldErrors = FormValidationService.validateFieldByType(
+        field,
+        fields,
+      );
       errors.push(...fieldErrors);
     }
 
     // 3. Transversal validations
-    const transversalErrors = this.validateTransversalRules(fields);
+    const transversalErrors =
+      FormValidationService.validateTransversalRules(fields);
     errors.push(...transversalErrors);
 
     // 4. Circular dependencies validation
-    const calculatedFields = fields.filter(f => f.type === 'calculated');
+    const calculatedFields = fields.filter((f) => f.type === 'calculated');
     if (calculatedFields.length > 0) {
-      const dependencyResult = FieldValidators.validateDependencies(calculatedFields);
+      const dependencyResult =
+        FieldValidators.validateDependencies(calculatedFields);
       if (!dependencyResult.isValid) {
         errors.push({
           field: 'form',
@@ -89,40 +93,47 @@ export class FormValidationService {
     };
   }
 
-  private static validateFieldByType(field: Field, allFields: Field[]): ValidationError[] {
+  private static validateFieldByType(
+    field: Field,
+    allFields: Field[],
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     switch (field.type) {
       case 'text':
-        errors.push(...this.validateTextField(field));
+        errors.push(...FormValidationService.validateTextField(field));
         break;
       case 'number':
-        errors.push(...this.validateNumberField(field));
+        errors.push(...FormValidationService.validateNumberField(field));
         break;
       // case 'boolean':
       //   errors.push(...this.validateBooleanField(field));
       //   break;
       case 'date':
-        errors.push(...this.validateDateField(field));
+        errors.push(...FormValidationService.validateDateField(field));
         break;
       case 'select':
-        errors.push(...this.validateSelectField(field));
+        errors.push(...FormValidationService.validateSelectField(field));
         break;
       case 'calculated':
-        errors.push(...this.validateCalculatedField(field, allFields));
+        errors.push(
+          ...FormValidationService.validateCalculatedField(field, allFields),
+        );
         break;
     }
 
     return errors;
   }
 
-
   private static validateTextField(field: TextField): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (field.validations) {
       for (const validation of field.validations) {
-        if (validation.type === 'regex' && typeof validation.value === 'string') {
+        if (
+          validation.type === 'regex' &&
+          typeof validation.value === 'string'
+        ) {
           if (!FieldValidators.validateRegex(validation.value)) {
             errors.push({
               field: field.id,
@@ -136,7 +147,6 @@ export class FormValidationService {
 
     return errors;
   }
-
 
   private static validateNumberField(field: NumberField): ValidationError[] {
     const errors: ValidationError[] = [];
@@ -167,14 +177,12 @@ export class FormValidationService {
     return errors;
   }
 
-
   // private static validateBooleanField(field: any): ValidationError[] {
   //   const errors: ValidationError[] = [];
   //   // As validações serão aplicadas durante a submissão
 
   //   return errors;
   // }
-
 
   private static validateDateField(field: DateField): ValidationError[] {
     const errors: ValidationError[] = [];
@@ -191,14 +199,13 @@ export class FormValidationService {
     return errors;
   }
 
-
   private static validateSelectField(field: SelectField): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (field.options) {
       const values = field.options.map((opt) => opt.value);
       const uniqueValues = new Set(values);
-      
+
       if (values.length !== uniqueValues.size) {
         errors.push({
           field: field.id,
@@ -219,18 +226,20 @@ export class FormValidationService {
     return errors;
   }
 
-
-  private static validateCalculatedField(field: CalculatedField, allFields: Field[]): ValidationError[] {
+  private static validateCalculatedField(
+    field: CalculatedField,
+    allFields: Field[],
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (field.formula && field.dependencies) {
-      const allFieldIds = this.getAllFieldIds(allFields);
+      const allFieldIds = FormValidationService.getAllFieldIds(allFields);
       const formulaResult = FieldValidators.validateFormula(
         field.formula,
         field.dependencies,
         allFieldIds,
       );
-      
+
       if (!formulaResult.isValid) {
         errors.push({
           field: field.id,
@@ -246,9 +255,9 @@ export class FormValidationService {
   private static validateTransversalRules(fields: Field[]): ValidationError[] {
     const errors: ValidationError[] = [];
 
-    const ids = fields.map(f => f.id);
+    const ids = fields.map((f) => f.id);
     const uniqueIds = new Set(ids);
-    
+
     if (ids.length !== uniqueIds.size) {
       errors.push({
         field: 'form',
@@ -272,9 +281,8 @@ export class FormValidationService {
   }
 
   private static getAllFieldIds(fields: Field[]): string[] {
-    return fields.map(field => field.id);
+    return fields.map((field) => field.id);
   }
-
 
   static validateConditionalExpression(
     expression: string,
@@ -286,8 +294,10 @@ export class FormValidationService {
     const variables = expression.match(variableRegex) || [];
 
     for (const variable of variables) {
-      if (!availableFields.includes(variable) && 
-          !['true', 'false', 'null', 'undefined'].includes(variable)) {
+      if (
+        !availableFields.includes(variable) &&
+        !['true', 'false', 'null', 'undefined'].includes(variable)
+      ) {
         return {
           isValid: false,
           error: `Variable '${variable}' not found in the form fields`,
@@ -295,7 +305,7 @@ export class FormValidationService {
       }
     }
 
-    const allowedChars = /^[a-zA-Z0-9_+\-*\/^()\s.,>=<!=&|'"]+$/;
+    const allowedChars = /^[a-zA-Z0-9_+\-*/^()\s.,>=<!=&|'"]+$/;
     if (!allowedChars.test(expression)) {
       return {
         isValid: false,
@@ -306,7 +316,6 @@ export class FormValidationService {
     return { isValid: true };
   }
 
-
   static validateSubmission(
     formFields: Field[],
     submittedData: Record<string, any>,
@@ -316,7 +325,10 @@ export class FormValidationService {
     for (const field of formFields) {
       const value = submittedData[field.id];
 
-      if (field.required && (value === undefined || value === null || value === '')) {
+      if (
+        field.required &&
+        (value === undefined || value === null || value === '')
+      ) {
         errors.push({
           field: field.id,
           message: `field '${field.label}' is required`,
@@ -326,7 +338,10 @@ export class FormValidationService {
       }
 
       if (value !== undefined && value !== null) {
-        const fieldErrors = this.validateFieldValue(field, value);
+        const fieldErrors = FormValidationService.validateFieldValue(
+          field,
+          value,
+        );
         errors.push(...fieldErrors);
       }
     }
@@ -337,35 +352,44 @@ export class FormValidationService {
     };
   }
 
-
-  private static validateFieldValue(field: Field, value: any): ValidationError[] {
+  private static validateFieldValue(
+    field: Field,
+    value: any,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     switch (field.type) {
       case 'text':
-        errors.push(...this.validateTextValue(field, value));
+        errors.push(...FormValidationService.validateTextValue(field, value));
         break;
       case 'number':
-        errors.push(...this.validateNumberValue(field, value));
+        errors.push(...FormValidationService.validateNumberValue(field, value));
         break;
       case 'boolean':
-        errors.push(...this.validateBooleanValue(field, value));
+        errors.push(
+          ...FormValidationService.validateBooleanValue(field, value),
+        );
         break;
       case 'date':
-        errors.push(...this.validateDateValue(field, value));
+        errors.push(...FormValidationService.validateDateValue(field, value));
         break;
       case 'select':
-        errors.push(...this.validateSelectValue(field, value));
+        errors.push(...FormValidationService.validateSelectValue(field, value));
         break;
       case 'calculated':
-        errors.push(...this.validateCalculatedValue(field, value));
+        errors.push(
+          ...FormValidationService.validateCalculatedValue(field, value),
+        );
         break;
     }
 
     return errors;
   }
 
-  private static validateTextValue(field: TextField, value: string): ValidationError[] {
+  private static validateTextValue(
+    field: TextField,
+    value: string,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (typeof value !== 'string') {
@@ -381,7 +405,10 @@ export class FormValidationService {
       for (const validation of field.validations) {
         switch (validation.type) {
           case 'min_length':
-            if (typeof validation.value === 'number' && value.length < validation.value) {
+            if (
+              typeof validation.value === 'number' &&
+              value.length < validation.value
+            ) {
               errors.push({
                 field: field.id,
                 message: `Text must have at least ${validation.value} characters`,
@@ -390,7 +417,10 @@ export class FormValidationService {
             }
             break;
           case 'max_length':
-            if (typeof validation.value === 'number' && value.length > validation.value) {
+            if (
+              typeof validation.value === 'number' &&
+              value.length > validation.value
+            ) {
               errors.push({
                 field: field.id,
                 message: `Text must have at most ${validation.value} characters`,
@@ -418,10 +448,15 @@ export class FormValidationService {
               }
             }
             break;
-          case 'not_contain':
-            const forbiddenTerms = Array.isArray(validation.value) ? validation.value : [validation.value];
+          case 'not_contain': {
+            const forbiddenTerms = Array.isArray(validation.value)
+              ? validation.value
+              : [validation.value];
             for (const term of forbiddenTerms) {
-              if (typeof term === 'string' && value.toLowerCase().includes(term.toLowerCase())) {
+              if (
+                typeof term === 'string' &&
+                value.toLowerCase().includes(term.toLowerCase())
+              ) {
                 errors.push({
                   field: field.id,
                   message: `Text cannot contain '${term}'`,
@@ -430,6 +465,7 @@ export class FormValidationService {
               }
             }
             break;
+          }
           case 'not_empty':
             if (!value.trim()) {
               errors.push({
@@ -446,7 +482,10 @@ export class FormValidationService {
     return errors;
   }
 
-  private static validateNumberValue(field: NumberField, value: any): ValidationError[] {
+  private static validateNumberValue(
+    field: NumberField,
+    value: any,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     const numValue = Number(value);
@@ -471,7 +510,10 @@ export class FormValidationService {
       for (const validation of field.validations) {
         switch (validation.type) {
           case 'min':
-            if (typeof validation.value === 'number' && numValue < validation.value) {
+            if (
+              typeof validation.value === 'number' &&
+              numValue < validation.value
+            ) {
               errors.push({
                 field: field.id,
                 message: `Value must be greater than or equal to ${validation.value}`,
@@ -480,7 +522,10 @@ export class FormValidationService {
             }
             break;
           case 'max':
-            if (typeof validation.value === 'number' && numValue > validation.value) {
+            if (
+              typeof validation.value === 'number' &&
+              numValue > validation.value
+            ) {
               errors.push({
                 field: field.id,
                 message: `Value must be less than or equal to ${validation.value}`,
@@ -507,7 +552,10 @@ export class FormValidationService {
     return errors;
   }
 
-  private static validateBooleanValue(field: BooleanField, value: any): ValidationError[] {
+  private static validateBooleanValue(
+    field: BooleanField,
+    value: any,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (typeof value !== 'boolean') {
@@ -547,7 +595,10 @@ export class FormValidationService {
     return errors;
   }
 
-  private static validateDateValue(field: DateField, value: any): ValidationError[] {
+  private static validateDateValue(
+    field: DateField,
+    value: any,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (typeof value !== 'string') {
@@ -595,9 +646,13 @@ export class FormValidationService {
     if (field.validations) {
       for (const validation of field.validations) {
         switch (validation.type) {
-          case 'future_date':
+          case 'future_date': {
             const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const today = new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate(),
+            );
             if (validation.allowed === false && dateValue > today) {
               errors.push({
                 field: field.id,
@@ -606,6 +661,7 @@ export class FormValidationService {
               });
             }
             break;
+          }
         }
       }
     }
@@ -613,7 +669,10 @@ export class FormValidationService {
     return errors;
   }
 
-  private static validateSelectValue(field: SelectField, value: any): ValidationError[] {
+  private static validateSelectValue(
+    field: SelectField,
+    value: any,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     const validValues = field.options.map((opt: any) => opt.value);
@@ -668,7 +727,10 @@ export class FormValidationService {
     return errors;
   }
 
-  private static validateCalculatedValue(field: CalculatedField, value: any): ValidationError[] {
+  private static validateCalculatedValue(
+    field: CalculatedField,
+    value: any,
+  ): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (value !== undefined) {
@@ -681,4 +743,4 @@ export class FormValidationService {
 
     return errors;
   }
-} 
+}

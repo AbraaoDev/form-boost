@@ -1,8 +1,12 @@
+import {
+  CircularDependencyError,
+  FormNotFoundError,
+  InvalidIdError,
+} from '@/errors';
+import { FieldValidators } from '@/lib/validators/field-validators';
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import { getFormByIdParamsSchema } from '@/schemas/get-form-by-id';
-import { FieldValidators } from '@/lib/validators/field-validators';
-import { FormValidationService, type Field } from '@/services/form-validation';
-import { InvalidIdError, FormNotFoundError, CircularDependencyError } from '@/errors';
+import { type Field, FormValidationService } from '@/services/form-validation';
 
 export async function getFormByIdService(id: string) {
   const parse = getFormByIdParamsSchema.safeParse({ id });
@@ -23,13 +27,16 @@ export async function getFormByIdService(id: string) {
   const fields = version.fields as Field[];
 
   // Validar dependências circulares em campos calculated
-  const calculatedFields = fields.filter(f => f.type === 'calculated');
+  const calculatedFields = fields.filter((f) => f.type === 'calculated');
   if (calculatedFields.length > 0) {
-    const dependencyResult = FieldValidators.validateDependencies(calculatedFields);
+    const dependencyResult =
+      FieldValidators.validateDependencies(calculatedFields);
     if (!dependencyResult.isValid) {
-      console.error(`Circular dependency detected in form ${id}: ${dependencyResult.error}`);
+      console.error(
+        `Circular dependency detected in form ${id}: ${dependencyResult.error}`,
+      );
       throw new CircularDependencyError(
-        `Circular dependency detected in calculated fields: ${dependencyResult.error}`
+        `Circular dependency detected in calculated fields: ${dependencyResult.error}`,
       );
     }
   }

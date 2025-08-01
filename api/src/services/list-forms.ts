@@ -41,14 +41,23 @@ export async function listFormsService(query: ListFormsQuery) {
 
   const order = query.order === 'desc' ? 'desc' : 'asc';
 
-  const { total, forms } = await repoForm.listActive({
-    name: query.name,
-    schema_version: query.schema_version,
-    skip,
-    take,
-    orderBy,
-    order,
-  });
+  const { total, forms } = query.include_inactives
+    ? await repoForm.listAll({
+        name: query.name,
+        schema_version: query.schema_version,
+        skip,
+        take,
+        orderBy,
+        order,
+      })
+    : await repoForm.listActive({
+        name: query.name,
+        schema_version: query.schema_version,
+        skip,
+        take,
+        orderBy,
+        order,
+      });
 
   const total_pages = Math.ceil(total / take);
 
@@ -63,6 +72,13 @@ export async function listFormsService(query: ListFormsQuery) {
         ? Number(form.versions[0].schema_version)
         : null,
       createdAt: form.createdAt.toISOString(),
+      ...(query.include_inactives && {
+        isActive: form.isActive,
+        ...(form.isActive === false && {
+          deletedAt: form.deletedAt?.toISOString() || null,
+          userDeleted: form.userDeleted || null,
+        }),
+      }),
     })),
   };
 }

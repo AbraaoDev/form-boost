@@ -10,6 +10,7 @@ export const listFormsQuerySchema = z.object({
   length_page: z.coerce.number().int().min(1).max(100).default(20),
   orderBy: z.enum(allowedOrderBy).optional(),
   order: z.enum(allowedOrder).optional(),
+  include_inactives: z.coerce.boolean().optional(),
 });
 
 export type ListFormsQuery = z.infer<typeof listFormsQuerySchema>;

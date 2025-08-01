@@ -7,36 +7,39 @@ export async function createFormService(
   userId: string,
 ) {
   const validationResult = FormValidationService.validateForm(fields);
-  
+
   if (!validationResult.isValid) {
     const errorMessage = validationResult.errors
-      .map(error => `${error.field}: ${error.message}`)
+      .map((error) => `${error.field}: ${error.message}`)
       .join('; ');
-    
+
     throw new Error(`Validation error: ${errorMessage}`);
   }
 
-  const fieldIds = fields.map(f => f.id);
+  const fieldIds = fields.map((f) => f.id);
   for (const field of fields) {
     if (field.conditional) {
-      const conditionalResult = FormValidationService.validateConditionalExpression(
-        field.conditional,
-        fieldIds,
-      );
-      
+      const conditionalResult =
+        FormValidationService.validateConditionalExpression(
+          field.conditional,
+          fieldIds,
+        );
+
       if (!conditionalResult.isValid) {
-        throw new Error(`Conditional expression error for field '${field.id}': ${conditionalResult.error}`);
+        throw new Error(
+          `Conditional expression error for field '${field.id}': ${conditionalResult.error}`,
+        );
       }
     }
   }
 
   const prismaFormsRepository = new PrismaFormsRepository();
-  
+
   const form = await prismaFormsRepository.createForm({
     name,
     description,
     owner: {
-      connect: { id: userId }
+      connect: { id: userId },
     },
     versions: {
       create: {

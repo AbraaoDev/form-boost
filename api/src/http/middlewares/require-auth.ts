@@ -1,4 +1,4 @@
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 export async function requireAuth(
   request: FastifyRequest,
@@ -12,4 +12,4 @@ export async function requireAuth(
   } catch {
     return reply.status(401).send({ message: 'Unauthorized' });
   }
-} 
+}

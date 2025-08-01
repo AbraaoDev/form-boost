@@ -4,9 +4,9 @@ import { z } from 'zod';
 import { registerController } from '@/http/controllers/register';
 import { registerBodySchema } from '@/schemas/register';
 import {
+  internalServerErrorResponseSchema,
   userAlreadyExistsErrorResponseSchema,
   validationErrorResponseSchema,
-  internalServerErrorResponseSchema,
 } from '@/schemas/responses';
 
 export async function register(app: FastifyInstance) {

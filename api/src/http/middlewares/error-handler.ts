@@ -15,15 +15,19 @@ export async function errorHandler(
     });
   }
 
-  if ((error as any).statusCode === 400 && (error as any).code === 'FST_ERR_VALIDATION') {
+  if (
+    (error as any).statusCode === 400 &&
+    (error as any).code === 'FST_ERR_VALIDATION'
+  ) {
     return reply.status(400).send({
       error: 'VALIDATION_ERROR',
       message: 'Validation error',
-      issues: (error as any).validation?.map((issue: any) => ({
-        field: issue.instancePath,
-        message: issue.message,
-        code: issue.keyword,
-      })) || [],
+      issues:
+        (error as any).validation?.map((issue: any) => ({
+          field: issue.instancePath,
+          message: issue.message,
+          code: issue.keyword,
+        })) || [],
     });
   }
 
@@ -32,9 +36,9 @@ export async function errorHandler(
   }
 
   console.error('Unhandled error:', error);
-  
+
   return reply.status(500).send({
     error: 'INTERNAL_SERVER_ERROR',
     message: 'Internal server error',
   });
-} 
+}

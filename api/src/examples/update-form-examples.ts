@@ -4,142 +4,140 @@ export class UpdateFormExamples {
   static getValidUpdateExample() {
     return {
       schema_version: 3,
-      name: "Formulário de Cadastro de Pessoas (v3)",
-      description: "Versão revisada com validações de idade e ocupação",
+      name: 'Formulário de Cadastro de Pessoas (v3)',
+      description: 'Versão revisada com validações de idade e ocupação',
       fields: [
         {
-          id: "nome_completo",
-          label: "Nome completo",
-          type: "text",
+          id: 'nome_completo',
+          label: 'Nome completo',
+          type: 'text',
           required: true,
-          validations: [
-            { type: "max_length", value: 100 }
-          ]
+          validations: [{ type: 'max_length', value: 100 }],
         },
         {
-          id: "data_nascimento",
-          label: "Data de nascimento",
-          type: "date",
+          id: 'data_nascimento',
+          label: 'Data de nascimento',
+          type: 'date',
           required: true,
-          min: "1900-01-01",
-          max: "2030-12-31"
+          min: '1900-01-01',
+          max: '2030-12-31',
         },
         {
-          id: "idade",
-          label: "Idade (auto)",
-          type: "calculated",
+          id: 'idade',
+          label: 'Idade (auto)',
+          type: 'calculated',
           required: false,
-          formula: "floor((today() - data_nascimento) / 365.25)",
-          dependencies: ["data_nascimento"],
-          precision: 0
+          formula: 'floor((today() - data_nascimento) / 365.25)',
+          dependencies: ['data_nascimento'],
+          precision: 0,
         },
         {
-          id: "ocupacao",
-          label: "Área de atuação",
-          type: "select",
+          id: 'ocupacao',
+          label: 'Área de atuação',
+          type: 'select',
           required: true,
           options: [
-            { label: "TI", value: "ti" },
-            { label: "Educação", value: "edu" },
-            { label: "Saúde", value: "saude" }
-          ]
+            { label: 'TI', value: 'ti' },
+            { label: 'Educação', value: 'edu' },
+            { label: 'Saúde', value: 'saude' },
+          ],
         },
         {
-          id: "e_maior_de_idade",
-          label: "É maior de idade?",
-          type: "calculated",
+          id: 'e_maior_de_idade',
+          label: 'É maior de idade?',
+          type: 'calculated',
           required: false,
-          formula: "idade >= 18",
-          dependencies: ["idade"]
-        }
-      ]
+          formula: 'idade >= 18',
+          dependencies: ['idade'],
+        },
+      ],
     };
   }
 
   static getInvalidVersionExample() {
     return {
-      schema_version: 1, 
-      name: "Formulário de Teste",
-      description: "Descrição de teste",
+      schema_version: 1,
+      name: 'Formulário de Teste',
+      description: 'Descrição de teste',
       fields: [
         {
-          id: "campo_teste",
-          label: "Campo de teste",
-          type: "text",
-          required: true
-        }
-      ]
+          id: 'campo_teste',
+          label: 'Campo de teste',
+          type: 'text',
+          required: true,
+        },
+      ],
     };
   }
 
   static getCircularDependencyExample() {
     return {
       schema_version: 4,
-      name: "Formulário com Dependência Circular",
-      description: "Exemplo com dependência circular",
+      name: 'Formulário com Dependência Circular',
+      description: 'Exemplo com dependência circular',
       fields: [
         {
-          id: "campo_a",
-          label: "Campo A",
-          type: "calculated",
+          id: 'campo_a',
+          label: 'Campo A',
+          type: 'calculated',
           required: false,
-          formula: "campo_b + 1",
-          dependencies: ["campo_b"]
+          formula: 'campo_b + 1',
+          dependencies: ['campo_b'],
         },
         {
-          id: "campo_b",
-          label: "Campo B",
-          type: "calculated",
+          id: 'campo_b',
+          label: 'Campo B',
+          type: 'calculated',
           required: false,
-          formula: "campo_a + 1",
-          dependencies: ["campo_a"]
-        }
-      ]
+          formula: 'campo_a + 1',
+          dependencies: ['campo_a'],
+        },
+      ],
     };
   }
 
   static getInvalidFieldExample() {
     return {
       schema_version: 5,
-      name: "Formulário com Campo Inválido",
-      description: "Exemplo com campo inválido",
+      name: 'Formulário com Campo Inválido',
+      description: 'Exemplo com campo inválido',
       fields: [
         {
-          id: "nome",
-          label: "Nome",
-          type: "text",
-          required: true
+          id: 'nome',
+          label: 'Nome',
+          type: 'text',
+          required: true,
         },
         {
-          id: "idade_calculada",
-          label: "Idade Calculada",
-          type: "calculated",
+          id: 'idade_calculada',
+          label: 'Idade Calculada',
+          type: 'calculated',
           required: false,
-          formula: "idade + 1",
-          dependencies: ["idade"] 
-        }
-      ]
+          formula: 'idade + 1',
+          dependencies: ['idade'],
+        },
+      ],
     };
   }
 
   static getDuplicateOptionsExample() {
     return {
       schema_version: 6,
-      name: "Formulário com Opções Duplicadas",
-      description: "Exemplo com opções duplicadas",
+      name: 'Formulário com Opções Duplicadas',
+      description: 'Exemplo com opções duplicadas',
       fields: [
         {
-          id: "categoria",
-          label: "Categoria",
-          type: "select",
+          id: 'categoria',
+          label: 'Categoria',
+          type: 'select',
           required: true,
           options: [
-            { label: "TI", value: "ti" },
-            { label: "TI", value: "ti" }, 
-            { label: "Educação", value: "edu" }
-          ]
-        }
-      ]
+            { label: 'TI', value: 'ti' },
+            { label: 'TI', value: 'ti' },
+            { label: 'Educação', value: 'edu' },
+          ],
+        },
+      ],
     };
   }
 
@@ -151,7 +149,7 @@ export class UpdateFormExamples {
     // Teste 1: Exemplo válido
     console.log('✅ Teste 1: Exemplo válido');
     try {
-      const validExample = this.getValidUpdateExample();
+      const validExample = UpdateFormExamples.getValidUpdateExample();
       console.log('Payload:', JSON.stringify(validExample, null, 2));
       console.log('Resultado: Exemplo válido (simulado)');
     } catch (error) {
@@ -161,7 +159,8 @@ export class UpdateFormExamples {
     // Teste 2: Versão inválida
     console.log('\n❌ Teste 2: Versão inválida');
     try {
-      const invalidVersionExample = this.getInvalidVersionExample();
+      const invalidVersionExample =
+        UpdateFormExamples.getInvalidVersionExample();
       console.log('Payload:', JSON.stringify(invalidVersionExample, null, 2));
       console.log('Resultado: Deve retornar erro de versão inválida');
     } catch (error) {
@@ -171,7 +170,7 @@ export class UpdateFormExamples {
     // Teste 3: Dependência circular
     console.log('\n❌ Teste 3: Dependência circular');
     try {
-      const circularExample = this.getCircularDependencyExample();
+      const circularExample = UpdateFormExamples.getCircularDependencyExample();
       console.log('Payload:', JSON.stringify(circularExample, null, 2));
       console.log('Resultado: Deve retornar erro de dependência circular');
     } catch (error) {
@@ -181,7 +180,7 @@ export class UpdateFormExamples {
     // Teste 4: Campo inválido
     console.log('\n❌ Teste 4: Campo inválido');
     try {
-      const invalidFieldExample = this.getInvalidFieldExample();
+      const invalidFieldExample = UpdateFormExamples.getInvalidFieldExample();
       console.log('Payload:', JSON.stringify(invalidFieldExample, null, 2));
       console.log('Resultado: Deve retornar erro de campo inválido');
     } catch (error) {
@@ -191,7 +190,8 @@ export class UpdateFormExamples {
     // Teste 5: Opções duplicadas
     console.log('\n❌ Teste 5: Opções duplicadas');
     try {
-      const duplicateOptionsExample = this.getDuplicateOptionsExample();
+      const duplicateOptionsExample =
+        UpdateFormExamples.getDuplicateOptionsExample();
       console.log('Payload:', JSON.stringify(duplicateOptionsExample, null, 2));
       console.log('Resultado: Deve retornar erro de opções duplicadas');
     } catch (error) {
@@ -200,4 +200,4 @@ export class UpdateFormExamples {
 
     console.log('\n🎯 Testes concluídos!');
   }
-} 
+}
