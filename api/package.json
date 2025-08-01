@@ -8,7 +8,9 @@
 		"db:migrate": "pnpm prisma migrate dev",
 		"db:studio": "pnpm prisma studio",
 		"db:seed": "pnpm tsx prisma/seed.ts",
-		"test:validation": "tsx scripts/test-validation.ts",
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"test:run": "vitest run",
 		"lint": "biome check .",
 		"lint:fix": "biome check . --write"
 	},
@@ -31,10 +33,13 @@
 		"@faker-js/faker": "^9.9.0",
 		"@types/bcryptjs": "^3.0.0",
 		"@types/node": "^24.1.0",
+		"@vitest/ui": "^3.2.4",
 		"chalk": "^5.4.1",
 		"prisma": "^6.13.0",
 		"tsup": "^8.5.0",
 		"tsx": "^4.20.3",
-		"typescript": "^5.8.3"
+		"typescript": "^5.8.3",
+		"vite-tsconfig-paths": "^5.1.4",
+		"vitest": "^3.2.4"
 	}
 }
