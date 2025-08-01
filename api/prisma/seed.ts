@@ -264,15 +264,6 @@ async function seed() {
               required: false,
             },
             {
-              id: 'categoria_empresa',
-              label: 'Categoria da Empresa',
-              type: 'calculated',
-              formula:
-                'if(faturamento_anual <= 240000, "ME", if(faturamento_anual <= 360000, "EPP", "Grande Empresa"))',
-              dependencies: ['faturamento_anual'],
-              required: false,
-            },
-            {
               id: 'data_calculo',
               label: 'Data do Cálculo',
               type: 'date',
