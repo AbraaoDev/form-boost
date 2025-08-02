@@ -7,6 +7,9 @@ const envSchema = z.object({
   HOST: z.string().default('localhost'),
   PORT: z.coerce.number().default(3333),
   VERSION: z.string().default('v1'),
+  REDIS_URL: z.string().default('redis://localhost:6379'),
+  REDIS_TTL: z.coerce.number().default(300), 
+  REDIS_MAX_ITEMS: z.coerce.number().default(1000), 
 });
 
 const _env = envSchema.safeParse(process.env);

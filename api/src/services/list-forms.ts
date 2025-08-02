@@ -1,4 +1,5 @@
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
+import { CacheFormsService } from '@/services/cache-forms-service';
 import type { ListFormsQuery } from '@/schemas/list-forms';
 
 class InvalidParamError extends Error {
@@ -14,7 +15,28 @@ class InvalidFilterError extends Error {
   }
 }
 
-export async function listFormsService(query: ListFormsQuery) {
+const cacheService = new CacheFormsService();
+
+interface ListFormsResult {
+  page_active: number;
+  total_pages: number;
+  total_itens: number;
+  forms: Array<{
+    id: string;
+    name: string;
+    schema_version: number | null;
+    createdAt: string;
+    isActive?: boolean;
+    deletedAt?: string | null;
+    userDeleted?: string | null;
+  }>;
+  cacheInfo?: {
+    hit: boolean;
+    source: 'redis' | 'database';
+  };
+}
+
+export async function listFormsService(query: ListFormsQuery): Promise<ListFormsResult> {
   if (query.length_page && query.length_page > 100) {
     throw new InvalidParamError(
       'length_page',
@@ -25,6 +47,18 @@ export async function listFormsService(query: ListFormsQuery) {
     throw new InvalidFilterError(
       "The parameter 'orderBy' must be one of 'name' or 'createdAt'.",
     );
+  }
+
+  // Cache Aside Pattern
+  const cachedResult = await cacheService.getFromCache<ListFormsResult>(query);
+  if (cachedResult) {
+    return {
+      ...cachedResult,
+      cacheInfo: {
+        hit: true,
+        source: 'redis',
+      },
+    };
   }
 
   const repoForm = new PrismaFormsRepository();
@@ -61,7 +95,7 @@ export async function listFormsService(query: ListFormsQuery) {
 
   const total_pages = Math.ceil(total / take);
 
-  return {
+  const result: ListFormsResult = {
     page_active: query.page,
     total_pages,
     total_itens: total,
@@ -80,7 +114,15 @@ export async function listFormsService(query: ListFormsQuery) {
         }),
       }),
     })),
+    cacheInfo: {
+      hit: false,
+      source: 'database',
+    },
   };
+
+  await cacheService.setCache(query, result);
+
+  return result;
 }
 
 export { InvalidParamError, InvalidFilterError };

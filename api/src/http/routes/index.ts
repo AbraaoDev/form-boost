@@ -11,6 +11,7 @@ import { listFormsRoute } from './forms/list';
 import { listFormSubmissionsRoute } from './forms/list-submissions';
 import { submitFormRoute } from './forms/submit';
 import { updateFormSchemaVersionRoute } from './forms/update';
+import { cacheInvalidateRoute } from './cache/invalidate';
 
 export async function apiRoutes(app: FastifyInstance) {
   app.register(register);
@@ -24,4 +25,5 @@ export async function apiRoutes(app: FastifyInstance) {
   app.register(listFormSubmissionsRoute);
   app.register(deleteFormSubmissionRoute);
   app.register(updateFormSchemaVersionRoute);
+  app.register(cacheInvalidateRoute);
 }

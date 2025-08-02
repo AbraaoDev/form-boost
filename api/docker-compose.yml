@@ -11,6 +11,17 @@ services:
     volumes:
       - boost_db:/bitnami/postgresql
 
+  redis:
+    image: redis:7-alpine
+    container_name: form-boost-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
 volumes:
   boost_db:
+    driver: local
+  redis_data:
     driver: local

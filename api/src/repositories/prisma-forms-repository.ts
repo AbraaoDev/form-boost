@@ -1,9 +1,14 @@
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { CacheFormsService } from '@/services/cache-forms-service';
 
 export class PrismaFormsRepository {
+  private cacheService = new CacheFormsService();
+
   async createForm(data: Prisma.FormCreateInput) {
-    return prisma.form.create({ data });
+    const form = await prisma.form.create({ data });
+    await this.cacheService.invalidateCache('form_created', form.id);
+    return form;
   }
 
   async listActive({
@@ -130,6 +135,7 @@ export class PrismaFormsRepository {
         },
       });
 
+      await this.cacheService.invalidateCache('form_deleted', id);
       return { now };
     } catch {
       return 'fail';
@@ -148,6 +154,10 @@ export class PrismaFormsRepository {
     data: Prisma.FormUpdateInput,
     include?: Prisma.FormInclude,
   ) {
-    return prisma.form.update({ where, data, include });
+    const form = await prisma.form.update({ where, data, include });
+    if (form.id) {
+      await this.cacheService.invalidateCache('form_updated', form.id);
+    }
+    return form;
   }
 }
