@@ -22,7 +22,10 @@ const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
-app.register(fastifyCors);
+app.register(fastifyCors, {
+  origin: 'http://localhost:5173',
+  credentials: true
+});
 app.register(fastifyCookie);
 
 app.register(fastifySwagger, {
