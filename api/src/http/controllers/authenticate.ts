@@ -1,37 +1,39 @@
-import { compare } from 'bcryptjs';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { prisma } from '@/lib/prisma';
-import type { AuthenticateBody } from '../schemas/authenticate';
+import { authenticateService } from '@/services/authenticate';
+import { InvalidCredentialsError } from '@/services/errors/invalid-credentials-error';
+import type { AuthenticateBody } from '../../schemas/authenticate';
 
 export async function authenticateController(
   request: FastifyRequest<{ Body: AuthenticateBody }>,
   reply: FastifyReply,
 ) {
   const { email, password } = request.body;
-
-  const userFromEmail = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (!userFromEmail) {
-    return reply.status(404).send({ message: 'Invalid credentials.' });
-  }
-
-  const isPasswordValid = await compare(password, userFromEmail.passwordHash);
-
-  if (!isPasswordValid) {
-    return reply.status(401).send({ message: 'Invalid credentials.' });
-  }
-  const token = await reply.jwtSign(
-    {
-      sub: userFromEmail.id,
-    },
-    {
-      sign: {
-        expiresIn: '7d',
+  try {
+    const { user } = await authenticateService({ email, password });
+    const token = await reply.jwtSign(
+      {
+        sub: user.id,
       },
-    },
-  );
+      {
+        sign: {
+          expiresIn: '7d',
+        },
+      },
+    );
 
-  return reply.status(200).send({ token });
+    reply.setCookie('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60,
+      path: '/',
+    });
+
+    return reply.status(200).send({ token });
+  } catch (err) {
+    if (err instanceof InvalidCredentialsError) {
+      return reply.status(401).send({ message: err.message });
+    }
+    throw err;
+  }
 }

@@ -1,3 +1,4 @@
+import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
 import fastifySwagger from '@fastify/swagger';
@@ -12,15 +13,21 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+import { ZodError } from 'zod';
 import { env } from '@/env';
-import { authenticate } from './http/routes/auth/authenticate';
-import { register } from './http/routes/auth/register';
+import { errorHandler } from './http/middlewares/error-handler';
+import { apiRoutes } from './http/routes';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
-app.register(fastifyCors);
+app.register(fastifyCors, {
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+});
+app.register(fastifyCookie);
 
 app.register(fastifySwagger, {
   openapi: {
@@ -29,7 +36,16 @@ app.register(fastifySwagger, {
       description: 'Sistema de criação de formulários inteligentes.',
       version: '1.0.0',
     },
-    servers: [],
+    servers: [{ url: `http://${env.HOST}:${env.PORT}` }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   transform: jsonSchemaTransform,
 });
@@ -42,16 +58,17 @@ app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
 });
 
-app.register(register);
-app.register(authenticate);
+app.register(apiRoutes, { prefix: `/api/${env.VERSION}` });
+
+app.setErrorHandler(errorHandler);
 
 app.listen({ port: env.PORT }).then(() => {
+  const serverUrl = `http://${env.HOST}:${env.PORT}`;
+  console.log(chalk.cyan(`🦊 Http server running on ${serverUrl}`));
   console.log(
-    chalk.cyan(`🦊 Http server running http://${env.HOST}:${env.PORT}`),
-  );
-  console.log(
-    chalk.magenta(
-      `📂 Documentation API in http://${env.HOST}:${env.PORT}/docs`,
+    chalk.yellow(
+      `🚀 API routes available under ${serverUrl}/api/${env.VERSION}`,
     ),
   );
+  console.log(chalk.magenta(`📂 Documentation API in ${serverUrl}/docs`));
 });

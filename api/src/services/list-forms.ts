@@ -1,0 +1,128 @@
+import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
+import { CacheFormsService } from '@/services/cache-forms-service';
+import type { ListFormsQuery } from '@/schemas/list-forms';
+
+class InvalidParamError extends Error {
+  field: string;
+  constructor(field: string, message: string) {
+    super(message);
+    this.field = field;
+  }
+}
+class InvalidFilterError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
+const cacheService = new CacheFormsService();
+
+interface ListFormsResult {
+  page_active: number;
+  total_pages: number;
+  total_itens: number;
+  forms: Array<{
+    id: string;
+    name: string;
+    schema_version: number | null;
+    createdAt: string;
+    isActive?: boolean;
+    deletedAt?: string | null;
+    userDeleted?: string | null;
+  }>;
+  cacheInfo?: {
+    hit: boolean;
+    source: 'redis' | 'database';
+  };
+}
+
+export async function listFormsService(query: ListFormsQuery): Promise<ListFormsResult> {
+  if (query.length_page && query.length_page > 100) {
+    throw new InvalidParamError(
+      'length_page',
+      'The parameter "length_page" must be less than or equal to 100.',
+    );
+  }
+  if (query.orderBy && !['name', 'createdAt'].includes(query.orderBy)) {
+    throw new InvalidFilterError(
+      "The parameter 'orderBy' must be one of 'name' or 'createdAt'.",
+    );
+  }
+
+  // Cache Aside Pattern
+  const cachedResult = await cacheService.getFromCache<ListFormsResult>(query);
+  if (cachedResult) {
+    return {
+      ...cachedResult,
+      cacheInfo: {
+        hit: true,
+        source: 'redis',
+      },
+    };
+  }
+
+  const repoForm = new PrismaFormsRepository();
+
+  const skip = (query.page - 1) * query.length_page;
+  const take = query.length_page;
+
+  const orderBy =
+    query.orderBy === 'createdAt'
+      ? 'createdAt'
+      : query.orderBy === 'name'
+        ? 'name'
+        : 'createdAt';
+
+  const order = query.order === 'desc' ? 'desc' : 'asc';
+
+  const { total, forms } = query.include_inactives
+    ? await repoForm.listAll({
+        name: query.name,
+        schema_version: query.schema_version,
+        skip,
+        take,
+        orderBy,
+        order,
+      })
+    : await repoForm.listActive({
+        name: query.name,
+        schema_version: query.schema_version,
+        skip,
+        take,
+        orderBy,
+        order,
+      });
+
+  const total_pages = Math.ceil(total / take);
+
+  const result: ListFormsResult = {
+    page_active: query.page,
+    total_pages,
+    total_itens: total,
+    forms: forms.map((form) => ({
+      id: form.id,
+      name: form.name,
+      schema_version: form.versions[0]?.schema_version
+        ? Number(form.versions[0].schema_version)
+        : null,
+      createdAt: form.createdAt.toISOString(),
+      ...(query.include_inactives && {
+        isActive: form.isActive,
+        ...(form.isActive === false && {
+          deletedAt: form.deletedAt?.toISOString() || null,
+          userDeleted: form.userDeleted || null,
+        }),
+      }),
+    })),
+    cacheInfo: {
+      hit: false,
+      source: 'database',
+    },
+  };
+
+  await cacheService.setCache(query, result);
+
+  return result;
+}
+
+export { InvalidParamError, InvalidFilterError };
