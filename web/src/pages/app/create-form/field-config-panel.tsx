@@ -140,6 +140,194 @@ export function FieldConfigPanel({ field, onSave, onCancel }: FieldConfigPanelPr
           placeholder="Ex: idade >= 18"
           control={control}
         />
+
+        <Separator />
+
+        {/* Seção de Validações */}
+        <div className="space-y-4">
+          <Label className="text-base font-medium">Validações</Label>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Tamanho Mínimo</Label>
+              <Controller
+                control={control}
+                name="validations"
+                render={({ field }) => {
+                  const validations = field.value || [];
+                  const minLength = validations.find((v: any) => v.type === 'min_length');
+
+                  const updateMinLength = (value: number) => {
+                    const newValidations = validations.filter((v: any) => v.type !== 'min_length');
+                    if (value > 0) {
+                      newValidations.push({ type: 'min_length', value });
+                    }
+                    field.onChange(newValidations);
+                  };
+
+                  return (
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={minLength?.value || ''}
+                      onChange={(e) => updateMinLength(parseInt(e.target.value) || 0)}
+                    />
+                  );
+                }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Tamanho Máximo</Label>
+              <Controller
+                control={control}
+                name="validations"
+                render={({ field }) => {
+                  const validations = field.value || [];
+                  const maxLength = validations.find((v: any) => v.type === 'max_length');
+
+                  const updateMaxLength = (value: number) => {
+                    const newValidations = validations.filter((v: any) => v.type !== 'max_length');
+                    if (value > 0) {
+                      newValidations.push({ type: 'max_length', value });
+                    }
+                    field.onChange(newValidations);
+                  };
+
+                  return (
+                    <Input
+                      type="number"
+                      min="0"
+                      placeholder="100"
+                      value={maxLength?.value || ''}
+                      onChange={(e) => updateMaxLength(parseInt(e.target.value) || 0)}
+                    />
+                  );
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Expressão Regular</Label>
+            <Controller
+              control={control}
+              name="validations"
+              render={({ field }) => {
+                const validations = field.value || [];
+                const regex = validations.find((v: any) => v.type === 'regex');
+
+                const updateRegex = (value: string) => {
+                  const newValidations = validations.filter((v: any) => v.type !== 'regex');
+                  if (value.trim()) {
+                    newValidations.push({ type: 'regex', value });
+                  }
+                  field.onChange(newValidations);
+                };
+
+                return (
+                  <Input
+                    placeholder="^[a-zA-Z]+$"
+                    value={regex?.value || ''}
+                    onChange={(e) => updateRegex(e.target.value)}
+                  />
+                );
+              }}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Label>Não Vazio</Label>
+            <Controller
+              control={control}
+              name="validations"
+              render={({ field }) => {
+                const validations = field.value || [];
+                const notEmpty = validations.find((v: any) => v.type === 'not_empty');
+
+                const updateNotEmpty = (checked: boolean) => {
+                  const newValidations = validations.filter((v: any) => v.type !== 'not_empty');
+                  if (checked) {
+                    newValidations.push({ type: 'not_empty', value: true });
+                  }
+                  field.onChange(newValidations);
+                };
+
+                return (
+                  <Switch
+                    checked={!!notEmpty}
+                    onCheckedChange={updateNotEmpty}
+                  />
+                );
+              }}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Não Conter</Label>
+            <Controller
+              control={control}
+              name="validations"
+              render={({ field }) => {
+                const validations = field.value || [];
+                const notContain = validations.find((v: any) => v.type === 'not_contain');
+                const [newTerm, setNewTerm] = useState('');
+                const terms = notContain?.value || [];
+
+                const addTerm = () => {
+                  if (newTerm.trim()) {
+                    const newTerms = [...terms, newTerm.trim()];
+                    const newValidations = validations.filter((v: any) => v.type !== 'not_contain');
+                    newValidations.push({ type: 'not_contain', value: newTerms });
+                    field.onChange(newValidations);
+                    setNewTerm('');
+                  }
+                };
+
+                const removeTerm = (index: number) => {
+                  const newTerms = terms.filter((_: string, i: number) => i !== index);
+                  const newValidations = validations.filter((v: any) => v.type !== 'not_contain');
+                  if (newTerms.length > 0) {
+                    newValidations.push({ type: 'not_contain', value: newTerms });
+                  }
+                  field.onChange(newValidations);
+                };
+
+                return (
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {terms.map((term: string, index: number) => (
+                        <Badge key={index} variant="secondary" className="flex items-center gap-1 pr-1">
+                          <span>{term}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeTerm(index)}
+                            className="h-4 w-4 p-0 hover:bg-transparent"
+                          >
+                            <X className="h-3 w-3 text-muted-foreground" />
+                          </Button>
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        value={newTerm}
+                        onChange={(e) => setNewTerm(e.target.value)}
+                        placeholder="Termo a ser bloqueado"
+                        className="flex-1"
+                      />
+                      <Button type="button" variant="outline" size="sm" onClick={addTerm} className='h-9 w-9'>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </div>
+        </div>
       </div>
     );
   };
@@ -200,6 +388,129 @@ export function FieldConfigPanel({ field, onSave, onCancel }: FieldConfigPanelPr
           placeholder="Ex: idade >= 18"
           control={control}
         />
+
+        <Separator />
+
+        {/* Seção de Validações */}
+        <div className="space-y-4">
+          <Label className="text-base font-medium">Validações</Label>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Valor Mínimo</Label>
+              <Controller
+                control={control}
+                name="validations"
+                render={({ field }) => {
+                  const validations = field.value || [];
+                  const min = validations.find((v: any) => v.type === 'min');
+
+                  const updateMin = (value: number) => {
+                    const newValidations = validations.filter((v: any) => v.type !== 'min');
+                    if (value !== undefined && value !== null) {
+                      newValidations.push({ type: 'min', value });
+                    }
+                    field.onChange(newValidations);
+                  };
+
+                  return (
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      value={min?.value || ''}
+                      onChange={(e) => updateMin(parseFloat(e.target.value) || 0)}
+                    />
+                  );
+                }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Valor Máximo</Label>
+              <Controller
+                control={control}
+                name="validations"
+                render={({ field }) => {
+                  const validations = field.value || [];
+                  const max = validations.find((v: any) => v.type === 'max');
+
+                  const updateMax = (value: number) => {
+                    const newValidations = validations.filter((v: any) => v.type !== 'max');
+                    if (value !== undefined && value !== null) {
+                      newValidations.push({ type: 'max', value });
+                    }
+                    field.onChange(newValidations);
+                  };
+
+                  return (
+                    <Input
+                      type="number"
+                      placeholder="100"
+                      value={max?.value || ''}
+                      onChange={(e) => updateMax(parseFloat(e.target.value) || 0)}
+                    />
+                  );
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Múltiplo De</Label>
+            <Controller
+              control={control}
+              name="validations"
+              render={({ field }) => {
+                const validations = field.value || [];
+                const multipleOf = validations.find((v: any) => v.type === 'multiple_of');
+
+                const updateMultipleOf = (value: number) => {
+                  const newValidations = validations.filter((v: any) => v.type !== 'multiple_of');
+                  if (value > 0) {
+                    newValidations.push({ type: 'multiple_of', value });
+                  }
+                  field.onChange(newValidations);
+                };
+
+                return (
+                  <Input
+                    type="number"
+                    min="1"
+                    placeholder="1"
+                    value={multipleOf?.value || ''}
+                    onChange={(e) => updateMultipleOf(parseFloat(e.target.value) || 1)}
+                  />
+                );
+              }}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <Label>Não Vazio</Label>
+            <Controller
+              control={control}
+              name="validations"
+              render={({ field }) => {
+                const validations = field.value || [];
+                const notEmpty = validations.find((v: any) => v.type === 'not_empty');
+
+                const updateNotEmpty = (checked: boolean) => {
+                  const newValidations = validations.filter((v: any) => v.type !== 'not_empty');
+                  if (checked) {
+                    newValidations.push({ type: 'not_empty', value: true });
+                  }
+                  field.onChange(newValidations);
+                };
+
+                return (
+                  <Switch
+                    checked={!!notEmpty}
+                    onCheckedChange={updateNotEmpty}
+                  />
+                );
+              }}
+            />
+          </div>
+        </div>
       </div>
     );
   };

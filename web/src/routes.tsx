@@ -19,16 +19,16 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: '/create-form',
-    errorElement: <NotFound />,
-    children: [
-      {
-        path: '/create-form',
-        element: <DashboardCreateForm />,
-      },
-    ],
-  },
+  // {
+  //   path: '/create-form',
+  //   errorElement: <NotFound />,
+  //   children: [
+  //     {
+  //       path: '/create-form',
+  //       element: <DashboardCreateForm />,
+  //     },
+  //   ],
+  // },
   {
     path: '/',
     element: <AuthLayout />,

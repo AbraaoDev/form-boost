@@ -8,6 +8,7 @@ import {
   TextSelect,
   ToggleLeft,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import type { FieldType } from '@/types/form';
 
 type FieldDragButtonProps = {
@@ -15,6 +16,7 @@ type FieldDragButtonProps = {
   draggableId?: string;
   index?: number;
   className?: string;
+  disabled?: boolean;
 };
 
 const typeConfig = {
@@ -49,28 +51,38 @@ export function FieldDragButton({
   draggableId = `sidebar-field-${type}`,
   index = 0,
   className = 'h-24 w-full bg-muted/50 flex rounded border ',
+  disabled = false,
 }: FieldDragButtonProps) {
   const config = typeConfig[type];
   const IconComponent = config.icon;
+  const isCalculated = type === 'calculated';
 
   return (
-    <Draggable draggableId={draggableId} index={index}>
+    <Draggable draggableId={draggableId} index={index} isDragDisabled={disabled}>
       {(provided) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className={className}
+          className={`${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           <div
-            className='w-6 h-full bg-muted/50 flex items-center justify-center hover:brightness-125 transition-all rounded-l'
+            className={`w-6 h-full bg-muted/50 flex items-center justify-center transition-all rounded-l ${disabled ? 'cursor-not-allowed' : 'hover:brightness-125 cursor-grab'
+              }`}
             {...provided.dragHandleProps}
           >
             <GripVertical size={14} />
           </div>
 
-          <div className='flex-1 flex flex-col items-center justify-center gap-3 px-4 cursor-pointer hover:bg-muted/80 transition-all border-l'>
+          <div className={`flex-1 flex flex-col items-center justify-center gap-3 px-4 transition-all border-l relative ${disabled ? 'cursor-not-allowed' : 'cursor-pointer hover:bg-muted/80'
+            }`}>
             <IconComponent size={20} />
             <p className='text-sm font-medium'>{config.label}</p>
+
+            {isCalculated && (
+              <Badge variant="default" className="absolute bottom-1 text-xs bg-orange-100 text-orange-500 ">
+                Em breve
+              </Badge>
+            )}
           </div>
         </div>
       )}

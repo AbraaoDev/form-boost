@@ -78,10 +78,10 @@ export function Forms() {
       <div className='space-y-2.5 mt-4'>
         <div className='flex items-center justify-between'>
           <FormTableFilters />
-          <Button onClick={() => navigate('/create-form')}>
+          {/* <Button onClick={() => navigate('/create-form')}>
             <Plus />
             Criar formulários
-          </Button>
+          </Button> */}
         </div>
 
         <div className='border rounded-md'>

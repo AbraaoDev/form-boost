@@ -35,6 +35,10 @@ export function CreateFormPage() {
     if (source.droppableId === 'field-types-sidebar' && destination.droppableId === 'form-creation-area') {
       const draggedFieldType = result.draggableId.replace('sidebar-field-', '') as FieldType;
 
+      if (draggedFieldType === 'calculated') {
+        return;
+      }
+
       const newField: Field = createDefaultField(draggedFieldType);
       setSelectedField(newField);
     }

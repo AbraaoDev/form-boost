@@ -47,19 +47,19 @@ export function ActionMenu({ formId }: ActionMenuProps) {
       <DropdownMenuContent align='end' className='w-56'>
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <button className='w-full'>
+            <button className='w-full opacity-50' disabled>
               <CornerDownLeft className='mr-2 h-4 w-4' />
               <span>Responder</span>
             </button>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <button className='w-full'>
+            <button className='w-full opacity-50' disabled>
               <Edit className='mr-2 h-4 w-4' />
               <span>Editar</span>
             </button>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <button className='w-full' onClick={() => deleteFormFn({ formId })}>
+            <button className='w-full cursor-pointer' onClick={() => deleteFormFn({ formId })}>
               <Trash className='mr-2 h-4 w-4 text-rose-500' />
               <span className='text-rose-500'>Excluir</span>
             </button>

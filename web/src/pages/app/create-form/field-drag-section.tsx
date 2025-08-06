@@ -35,6 +35,7 @@ export function FieldDragSection() {
                 type={type}
                 draggableId={`sidebar-field-${type}`}
                 index={index}
+                disabled={type === 'calculated'}
               />
             ))}
             {provided.placeholder}
