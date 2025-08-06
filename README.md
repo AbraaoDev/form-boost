@@ -42,6 +42,35 @@ To make API testing easier, a Postman collection is included in this repository.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/38248876/2sB3BDHqBv)
 
+## Technologies
+
+
+### Frontend
+
+- [Nuxt](https://nuxt.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [TanStack Query](https://tanstack.com/query/latest)
+- [Zod](https://tanstack.com/query/latest)
+- [Shadcn-UI](https://ui.shadcn.com/)
+- [Tailwind](https://tailwindcss.com/)
+
+### Backend
+
+- [Fastify](https://fastify.dev/)
+- [Prisma](https://www.prisma.io/)
+- [PostgreSQL](https://gorm.io/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Fastify-type-provider-Zod](https://github.com/turkerdev/fastify-type-provider-zod)
+- [Vitest](https://vitest.dev/)
+- [Redis](https://redis.io/)
+- [Scalar](https://scalar.com/)
+
+
+## Protótipo UI [FIGMA]
+- [Ver protótipo](https://www.figma.com/design/WDONtIkDx456NRIM6pG6Q9/FormBoost?node-id=0-1&t=USYiTsA6e7cgnX94-1)
+
+
+
 
 ## 🚀 Getting started
 
@@ -50,7 +79,7 @@ To make API testing easier, a Postman collection is included in this repository.
 1. Clone the project and access the folder
 
    ```zsh
-   $ git clone https://github.com/abraaodev/formboost.git && cd formboost
+   $ git clone https://github.com/abraaodev/form-boost.git && cd form-boost
    ```
 
 2. Create .env

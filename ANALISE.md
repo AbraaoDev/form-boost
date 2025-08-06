@@ -451,7 +451,7 @@ private getTTLForQuery(query: ListFormsQuery): number {
 - **API bem estruturada** com versionamento (/v1/forms)
 - **Documentação rica** com Zod
 - **Schemas documentados** de cada rota
-- **Rota /docs** com documentação interativa
+- **Rota /docs** com documentação interativa, utilizando Scalar API Reference.
 
 #### 7.2.5 ✅ Variáveis de Ambiente
 - **Externalização de configs** (.env)
@@ -476,6 +476,6 @@ private getTTLForQuery(query: ListFormsQuery): number {
 5. **Otimizar performance**
 
 ### 8.2 Lições Aprendidas
-**Estimativas de prazo**: Inicialmente, não foram estipulados prazos e nem organização. O fato de ter que solucionar um problema, necessitou de um mapeamento de task durante a solução de todo o projeto. Como mencionado no início, um dos pontos que desperdiçaram um fração de tempo, foi diretamente proporcional a questões de organização, em estipular o que fazer, quais impedimentos surgiriam e as melhores escolhas.
+**Estimativas de prazo**: Inicialmente, não foram estipulados prazos e nem organização. O fato de ter que solucionar um problema, necessitou de um mapeamento de task durante a solução de todo o projeto. Como mencionado no início, um dos pontos que desperdiçaram um fração de tempo, foi diretamente proporcional a questões de organização, em estipular o que fazer, quais impedimentos surgiriam e as melhores escolhas. Esse era o verdadeiro desafio.
 
 
