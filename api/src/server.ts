@@ -23,7 +23,7 @@ const app = fastify().withTypeProvider<ZodTypeProvider>();
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
 app.register(fastifyCors, {
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:3333'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 });
@@ -62,7 +62,7 @@ app.register(apiRoutes, { prefix: `/api/${env.VERSION}` });
 
 app.setErrorHandler(errorHandler);
 
-app.listen({ port: env.PORT }).then(() => {
+app.listen({ port: env.PORT, host: env.HOST }).then(() => {
   const serverUrl = `http://${env.HOST}:${env.PORT}`;
   console.log(chalk.cyan(`🦊 Http server running on ${serverUrl}`));
   console.log(

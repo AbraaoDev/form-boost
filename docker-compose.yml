@@ -1,0 +1,91 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: form-boost-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-docker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-docker}
+      POSTGRES_DB: ${DB_NAME:-form-boost}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - form-boost-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: form-boost-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - form-boost-net
+
+  api:
+    container_name: form-boost-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-3333}:3333"
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-docker}:${DB_PASSWORD:-docker}@db:5432/${DB_NAME:-form-boost}
+      DB_HOST: db
+      DB_USER: ${DB_USER:-docker}
+      DB_PASSWORD: ${DB_PASSWORD:-docker}
+      DB_NAME: ${DB_NAME:-form-boost}
+      DB_PORT: 5432
+      
+      REDIS_URL: redis://redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      
+      PORT: 3333
+      HOST: 0.0.0.0
+      VERSION: v1
+      NODE_ENV: dev
+      
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key}
+    depends_on:
+      - db
+      - redis
+    networks:
+      - form-boost-net
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+
+  web:
+    container_name: form-boost-web
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      VITE_API_URL: http://localhost:${API_PORT:-3333}/api/v1
+      NODE_ENV: development
+    depends_on:
+      - api
+    networks:
+      - form-boost-net
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+
+networks:
+  form-boost-net:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local 

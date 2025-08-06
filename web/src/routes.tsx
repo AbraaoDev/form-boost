@@ -6,11 +6,16 @@ import { DashboardCreateForm } from './pages/app/create-form/index';
 import { Forms } from './pages/app/forms/forms';
 import { Login } from './pages/auth/login/login';
 import { Register } from './pages/auth/register/register';
+import { AuthGuard } from './components/auth-guard';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
+    element: (
+      <AuthGuard>
+        <AppLayout />
+      </AuthGuard>
+    ),
     errorElement: <NotFound />,
     children: [
       {

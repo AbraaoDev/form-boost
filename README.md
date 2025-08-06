@@ -94,19 +94,43 @@ To make API testing easier, a Postman collection is included in this repository.
    FRONTEND_PORT=3000
    ```
 
-3. **Execute aplication**
+3. **Execute application**
 
-   Unic command for build image API and Database
+   Build and start all services (API, Database, Redis, Frontend):
 
    ```zsh
    docker-compose up --build
    ```
 
+   Or start without rebuilding:
+
    ```zsh
    docker-compose up
    ```
 
-- **A) Stop Aplication:**
+4. **Populate database with sample data (Optional)**
+
+   After the containers are running, you can populate the database with sample data:
+
+   ```zsh
+   # Apply database migrations
+   docker exec form-boost-api npx prisma migrate deploy
+
+   # Run database seeds
+   docker exec form-boost-api pnpm tsx prisma/seed.ts
+   ```
+
+   **Default credentials created:**
+   - Email: `solusenai@fiepe.org.br`
+   - Password: `123456`
+
+5. **Access the application**
+
+   - **Frontend**: http://localhost:3000
+   - **API Documentation**: http://localhost:3333/docs/
+   - **API Base URL**: http://localhost:3333/api/v1
+
+- **Stop Application:**
 
   ```zsh
   docker compose down
