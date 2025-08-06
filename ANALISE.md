@@ -5,7 +5,7 @@
 ### 1.1 Visão Geral do Projeto
 O FormBoost é uma plataforma para criação e gerenciamento de formulários inteligentes com campos calculados e validações complexas. O sistema foi desenvolvido com arquitetura full-stack(API e WEB).
 
-### 1.1.0 Sumário Executivo
+### 1.1.0 Sumário
 
 #### 1.1.1 Principais Decisões Técnicas
 - **[Migração Next.js → Vite](#121-migração-do-nextjs-para-vite):** Substituição por questões de cookies e performance
@@ -429,7 +429,7 @@ private getTTLForQuery(query: ListFormsQuery): number {
 
 **Risco de Prazo:** Implementação completa seria muito arriscada considerando o prazo disponível.
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0;"><iframe id="js_video_iframe" src="https://jumpshare.com/embed/UXyV5h30EVF031KczmGf" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+![Criando Formulário](/docs/createForm.gif)
 
 ### 7.2 Diferenciais Técnicos Implementados
 
