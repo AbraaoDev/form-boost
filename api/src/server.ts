@@ -52,6 +52,9 @@ app.register(fastifySwagger, {
 
 app.register(ScalarApiReference, {
   routePrefix: '/docs',
+  configuration: {
+    theme: 'elysiajs'
+  }
 });
 
 app.register(fastifyJwt, {
