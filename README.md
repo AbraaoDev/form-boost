@@ -6,6 +6,10 @@
 
 Bem-vindo ao projeto da FormBoost! Este repositório contém o código-fonte de uma Aplicação Fullstack, projetada para gerenciar Formulários inteligentes.
 
+## 📄 Documentação de Análise
+
+- [Documento de Análise](./ANALISE.md)
+
 
 ## 🎯 Endpoints
 

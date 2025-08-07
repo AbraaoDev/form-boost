@@ -469,7 +469,7 @@ private getTTLForQuery(query: ListFormsQuery): number {
 ## 8. Conclusões e Recomendações
 
 ### 8.1 Próximos Passos
-1. **Implementar refresh tokens**
+1. **Modularizar o projeto, perceptível que há algumas partes que há a necessidade de modularização**
 2. **Completar engine de criação de formulários**
 3. **Adicionar testes E2E**
 4. **Implementar monitoramento**
