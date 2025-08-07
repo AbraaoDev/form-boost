@@ -9,7 +9,7 @@
 		"db:studio": "pnpm prisma studio",
 		"db:seed": "pnpm tsx prisma/seed.ts",
 		"test": "vitest",
-		"test:ui": "vitest --ui",
+		"test:ui": "vitest --ui --no-open",
 		"test:run": "vitest run",
 		"lint": "biome check .",
 		"lint:fix": "biome check . --write"

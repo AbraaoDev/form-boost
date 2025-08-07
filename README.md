@@ -89,13 +89,22 @@ To make API testing easier, a Postman collection is included in this repository.
 2. Create .env
 
    ```env
-   DB_USER=formuser
-   DB_PASSWORD=formpass
-   DB_NAME=formboost_db
-   DB_HOST=db
+   DB_USER=docker
+   DB_PASSWORD=docker
+   DB_NAME=form-boost
    DB_PORT=5432
+
+   # Redis
+   REDIS_PORT=6379
+
+   # Api
    API_PORT=3333
-   FRONTEND_PORT=3000
+
+   # Front
+   WEB_PORT=3000
+
+   # Security
+   JWT_SECRET=dev-secret-key 
    ```
 
 3. **Execute application**
@@ -118,15 +127,32 @@ To make API testing easier, a Postman collection is included in this repository.
 
    ```zsh
    # Apply database migrations
-   docker exec form-boost-api npx prisma migrate deploy
+   docker exec form-boost-api pnpm db:migrate
 
    # Run database seeds
-   docker exec form-boost-api pnpm tsx prisma/seed.ts
+   docker exec form-boost-api pnpm db:seed
    ```
 
    **Default credentials created:**
    - Email: `solusenai@fiepe.org.br`
    - Password: `123456`
+
+4.2. **Run Tests (Optional)**
+
+   After the containers are running, you can execute the API tests:
+
+   ```zsh
+   # Run tests with visual interface (Vitest UI)
+   docker exec form-boost-api pnpm test:ui
+
+   # Run tests in watch mode
+   docker exec form-boost-api pnpm test:watch
+
+   # Run tests once
+   docker exec form-boost-api pnpm test
+   ```
+
+   **Note:** Tests use Vitest as the testing framework and include unit tests.
 
 5. **Access the application**
 
