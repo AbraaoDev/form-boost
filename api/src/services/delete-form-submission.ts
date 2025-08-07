@@ -1,47 +1,13 @@
 import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
-
-export class FormNotFoundError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormNotFoundError';
-  }
-}
-
-export class SubmitNotFoundError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'SubmitNotFoundError';
-  }
-}
-
-export class SubmitAlreadyRemovedError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'SubmitAlreadyRemovedError';
-  }
-}
-
-export class InactiveFormError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'InactiveFormError';
-  }
-}
-
-export class SubmitBlockedError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'SubmitBlockedError';
-  }
-}
-
-export class SoftDeleteFailError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'SoftDeleteFailError';
-  }
-}
+import {
+  FormNotFoundError,
+  SubmitNotFoundError,
+  SubmitAlreadyRemovedError,
+  InactiveFormError,
+  SubmitBlockedError,
+  SoftDeleteFailError,
+} from '@/errors';
 
 export async function deleteFormSubmissionService(
   formId: string,

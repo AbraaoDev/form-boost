@@ -1,28 +1,7 @@
 import { PrismaFormSubmissionsRepository } from '@/repositories/prisma-form-submissions-repository';
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import type { ListFormSubmissionsQuery } from '@/schemas/list-form-submissions';
-
-export class FormNotFoundError extends Error {
-  constructor(msg: string) {
-    super(msg);
-    this.name = 'FormNotFoundError';
-  }
-}
-
-export class InvalidParamError extends Error {
-  field: string;
-  constructor(field: string, message: string) {
-    super(message);
-    this.field = field;
-  }
-}
-
-export class InvalidPageError extends Error {
-  constructor(page: number) {
-    super(`Page ${page} contains no results.`);
-    this.name = 'InvalidPageError';
-  }
-}
+import { FormNotFoundError, InvalidParamError, InvalidPageError } from '@/errors';
 
 interface FieldFilter {
   field: string;

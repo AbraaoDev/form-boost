@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { UserAlreadyExistsError } from '@/services/errors/user-already-exists-error';
+import { UserAlreadyExistsError } from '@/errors';
 import { registerService } from '@/services/register';
 import type { RegisterBody } from '../../schemas/register';
 

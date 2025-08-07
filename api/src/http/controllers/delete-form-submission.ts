@@ -1,14 +1,14 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { DeleteFormSubmissionParams } from '@/schemas/delete-form-submission';
+import { deleteFormSubmissionService } from '@/services/delete-form-submission';
 import {
-  deleteFormSubmissionService,
   FormNotFoundError,
   InactiveFormError,
   SoftDeleteFailError,
   SubmitAlreadyRemovedError,
   SubmitBlockedError,
   SubmitNotFoundError,
-} from '@/services/delete-form-submission';
+} from '@/errors';
 
 export async function deleteFormSubmissionController(
   request: FastifyRequest<{ Params: DeleteFormSubmissionParams }>,

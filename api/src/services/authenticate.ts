@@ -1,7 +1,7 @@
 import { compare } from 'bcryptjs';
 import { PrismaUsersRepository } from '@/repositories/prisma-users-repository';
 import type { AuthenticateBody } from '@/schemas/authenticate';
-import { InvalidCredentialsError } from './errors/invalid-credentials-error';
+import { InvalidCredentialsError } from '@/errors';
 
 export async function authenticateService({
   email,

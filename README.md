@@ -143,7 +143,7 @@ To make API testing easier, a Postman collection is included in this repository.
 
    ```zsh
    # Run tests with visual interface (Vitest UI)
-   docker exec form-boost-api pnpm test:ui
+   docker exec -it form-boost-api pnpm test:ui
 
    # Run tests in watch mode
    docker exec form-boost-api pnpm test:watch

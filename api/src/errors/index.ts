@@ -1,10 +1,13 @@
 // Base Error
-
-export { UnauthorizedError } from '@/http/routes/_errors/unauthorized-error';
-// Auth Errors (mantendo os existentes)
-export { InvalidCredentialsError } from '@/services/errors/invalid-credentials-error';
-export { UserAlreadyExistsError } from '@/services/errors/user-already-exists-error';
 export { BaseError } from './base-error';
+
+// Auth Errors
+export {
+  UnauthorizedError,
+  InvalidCredentialsError,
+  UserAlreadyExistsError,
+} from './auth-errors';
+
 // Form Errors
 export {
   CircularDependencyError,
@@ -14,6 +17,7 @@ export {
   InvalidSchemaError,
   InvalidSchemaVersionError,
 } from './form-errors';
+
 // Submission Errors
 export {
   InactiveFormError,
@@ -22,6 +26,7 @@ export {
   SubmitBlockedError,
   SubmitNotFoundError,
 } from './submission-errors';
+
 // Validation Errors
 export {
   InvalidFilterError,

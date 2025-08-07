@@ -1,19 +1,7 @@
 import { PrismaFormsRepository } from '@/repositories/prisma-forms-repository';
 import { CacheFormsService } from '@/services/cache-forms-service';
 import type { ListFormsQuery } from '@/schemas/list-forms';
-
-class InvalidParamError extends Error {
-  field: string;
-  constructor(field: string, message: string) {
-    super(message);
-    this.field = field;
-  }
-}
-class InvalidFilterError extends Error {
-  constructor(message: string) {
-    super(message);
-  }
-}
+import { InvalidParamError, InvalidFilterError } from '@/errors';
 
 const cacheService = new CacheFormsService();
 

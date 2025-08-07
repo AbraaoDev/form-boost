@@ -53,7 +53,12 @@ app.register(fastifySwagger, {
 app.register(ScalarApiReference, {
   routePrefix: '/docs',
   configuration: {
-    theme: 'elysiajs'
+    theme: 'elysiajs',
+    servers: [
+      {
+        url: `http://localhost:${env.PORT}`,
+      }
+    ]
   }
 });
 

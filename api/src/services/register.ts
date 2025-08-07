@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs';
 import { PrismaUsersRepository } from '@/repositories/prisma-users-repository';
 import type { RegisterBody } from '@/schemas/register';
-import { UserAlreadyExistsError } from './errors/user-already-exists-error';
+import { UserAlreadyExistsError } from '@/errors';
 
 export async function registerService({ name, email, password }: RegisterBody) {
   const prismaUsersRepository = new PrismaUsersRepository();

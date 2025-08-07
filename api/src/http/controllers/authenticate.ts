@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { authenticateService } from '@/services/authenticate';
-import { InvalidCredentialsError } from '@/services/errors/invalid-credentials-error';
+import { InvalidCredentialsError } from '@/errors';
 import type { AuthenticateBody } from '../../schemas/authenticate';
 
 export async function authenticateController(

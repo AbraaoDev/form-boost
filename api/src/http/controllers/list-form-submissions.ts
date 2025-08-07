@@ -5,11 +5,9 @@ import type {
 } from '@/schemas/list-form-submissions';
 import {
   extractFieldFilters,
-  FormNotFoundError,
-  InvalidPageError,
-  InvalidParamError,
   listFormSubmissionsService,
 } from '@/services/list-form-submissions';
+import { FormNotFoundError, InvalidPageError, InvalidParamError } from '@/errors';
 
 export async function listFormSubmissionsController(
   request: FastifyRequest<{
